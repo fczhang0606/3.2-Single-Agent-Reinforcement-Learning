@@ -1,0 +1,19 @@
+################################################################################################################################
+https://gymnasium.farama.org/
+
+https://github.com/Farama-Foundation/Gymnasium
+################################################################################################################################
+conda create -n RL_GYM
+conda activate RL_GYM
+cd anaconda3/envs/RL_GYM
+
+conda install ipykernel
+conda install platformdirs
+pip3 install ipywidgets
+pip3 install --upgrade jupyter_core jupyter_client
+
+conda install python=3.8
+
+pip install "gymnasium[all]"
+################################################################################################################################
+
