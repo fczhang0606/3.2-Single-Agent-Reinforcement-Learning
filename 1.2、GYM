@@ -1,7 +1,11 @@
 ################################################################################################################################
-https://gymnasium.farama.org/
+https://openai.com/
 
+https://gymnasium.farama.org/
 https://github.com/Farama-Foundation/Gymnasium
+
+https://gym.openai.com/
+https://github.com/openai/gym
 ################################################################################################################################
 conda create -n RL_GYM
 conda activate RL_GYM
