@@ -1,0 +1,199 @@
+################################################################################################################################
+# https://openai.com/
+
+# https://gymnasium.farama.org/
+# https://github.com/Farama-Foundation/Gymnasium
+
+# https://gym.openai.com/
+# https://github.com/openai/gym
+# https://github.com/openai/gym/blob/master/gym/envs/toy_text/frozen_lake.py
+
+# https://zhuanlan.zhihu.com/p/468235479?utm_id=0
+################################################################################################################################
+import gymnasium as gym
+from gymnasium.envs.toy_text.frozen_lake import generate_random_map
+import numpy as np
+import random
+################################################################################################################################
+def random_policy_test(env) :
+
+    ite_num = 10000
+    ite_len = 100
+    suc_cnt = 0
+
+    for i in range(ite_num) :
+
+        observation, info = env.reset()
+
+        for j in range(ite_len) :
+
+            action = random.randint(0, 3)  # random policy
+
+            observation, reward, terminated, truncated, info = env.step(action)
+            # print(observation)
+            # print(reward)
+            # print(terminated)
+            # print(truncated)
+            # print(info)  # dict[str, Any]
+
+            if terminated or truncated :
+                if reward == 1 :
+                    suc_cnt += 1
+                break
+
+    return suc_cnt/ite_num
+################################################################################################################################
+def policy_evaluation(env, policy) :
+
+    ite_cnt = 0
+    gamma = 0.98
+    threshold = 1e-6
+
+    value_table = np.zeros(env.observation_space.n)  # 终止态=0
+
+    while True :
+
+        ite_cnt += 1
+        pre_value_table = value_table[:]
+
+        for state in range(len(value_table)) :
+            action = policy[state]  # greedy policy + no distribution
+
+            v=0
+            for p, next_s, r, done in env.P[state][action] :
+                v += p*(r+gamma*pre_value_table[next_s])  # no pi
+            value_table[state]=v
+
+        if np.sum(np.abs(pre_value_table-value_table))<threshold and ite_cnt>100 :
+            return value_table
+################################################################################################################################
+def policy_iteration(env) :
+
+    policy = np.zeros(env.observation_space.n)
+
+    ite_cnt = 0
+    while True :
+        ite_cnt += 1
+
+        new_value_table = policy_evaluation(env, policy)
+        new_policy = greedy_policy(env, new_value_table)
+
+        if np.all(new_policy == policy) :
+            print('policy achives * in iteration: ' + str(ite_cnt))
+            break
+
+        policy = new_policy
+
+        if ite_cnt % 100 == 0 :
+            print('policy iteration: ' + str(ite_cnt))
+            # print(new_value_table)
+            # print(new_policy)
+
+    return new_policy
+################################################################################################################################
+def policy_iteration_test(env) :
+
+    ite_num = 10000
+    ite_len = 100
+    suc_cnt = 0
+
+    policy = policy_iteration(env)
+
+    for i in range(ite_num) :
+
+        observation, info = env.reset()
+
+        for j in range(ite_len) :
+
+            action = int(policy[observation])
+            observation, reward, terminated, truncated, info = env.step(action)
+
+            if terminated or truncated :
+                if reward == 1 :
+                    suc_cnt += 1
+                break
+
+    return suc_cnt/ite_num
+################################################################################################################################
+def value_iteration(env) :
+
+    ite_cnt = 0
+    gamma = 0.98
+    threshold = 1e-6
+
+    value_table = np.zeros(env.observation_space.n)  # 终止态=0
+    policy = np.zeros(env.observation_space.n)
+
+    while True :
+        ite_cnt += 1
+
+        pre_value_table = value_table[:]
+        pre_policy = policy
+
+        for state in range(len(value_table)) :
+            action = policy[state]
+            v=0
+            for p, next_s, r, done in env.P[state][action] :
+                v += p*(r+gamma*pre_value_table[next_s])
+            value_table[state]=v
+
+        for state in range(len(value_table)) :
+            Q_value = [0]*4
+            for action in range(0, 4) :
+                for p, next_s, r, done in env.P[state][action] :
+                    Q_value[action] += p*(r+gamma*value_table[next_s])
+            policy[state] = Q_value.index(max(Q_value))
+
+        if np.sum(np.abs(pre_value_table-value_table))<threshold \
+        and np.all(pre_policy == policy) \
+        and ite_cnt>100 :
+            print('policy achives * in iteration: ' + str(ite_cnt))
+            break
+
+        if ite_cnt % 100 == 0 :
+            print('value iteration: ' + str(ite_cnt))
+            # print(value_table)
+            # print(policy)
+
+    return policy
+################################################################################################################################
+def value_iteration_test(env) :
+
+    ite_num = 10000
+    ite_len = 100
+    suc_cnt = 0
+
+    policy = value_iteration(env)
+
+    for i in range(ite_num) :
+
+        observation, info = env.reset()
+
+        for j in range(ite_len) :
+
+            action = int(policy[observation])
+            observation, reward, terminated, truncated, info = env.step(action)
+
+            if terminated or truncated :
+                if reward == 1 :
+                    suc_cnt += 1
+                break
+
+    return suc_cnt/ite_num
+################################################################################################################################
+env=gym.make('FrozenLake-v1', desc=None, map_name="4x4", is_slippery=True)
+# gym.make('FrozenLake-v1', desc=generate_random_map(size=8))
+
+observation, info = env.reset(seed=42)
+# print(observation)
+# print(info)
+################################################################################################################################
+print(random_policy_test(env))
+print(policy_iteration_test(env))
+print(value_iteration_test(env))
+
+env.close()
+################################################################################################################################
+################################################################################################################################
+################################################################################################################################
+
