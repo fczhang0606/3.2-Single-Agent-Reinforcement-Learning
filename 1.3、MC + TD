@@ -13,6 +13,9 @@
 ################################################################################################################################
 import gymnasium as gym
 from gymnasium.envs.toy_text.frozen_lake import generate_random_map
+
+import matplotlib.pyplot as plt  # https://matplotlib.org/stable/index.html#
+plt.rcParams['font.sans-serif']=['SimHei']
 import numpy as np
 import random
 ################################################################################################################################
@@ -143,22 +146,44 @@ observation, info = env.reset(seed=42)
 pi = equiprobability_policy(env)
 
 value_table1 = policy_evaluation(env, pi)
-print(value_table1)
+# print(value_table1)
 
-value_table2 = mc_evaluation(env, pi, 100000)
-print(value_table2)
+error1_avg = []
+error2_avg = []
+error3_avg = []
 
-value_table3 = TD0_evaluation(env, pi, 100000)
-print(value_table3)
+ite_ary = np.arange(100, 10001, 50)
+# print(ite_ary)
 
-value_table4 = TDlambda_evaluation(env, pi, 100000)
-print(value_table4)
+for ite in ite_ary :
+
+    value_table2 = mc_evaluation(env, pi, ite)
+    # print(value_table2)
+
+    value_table3 = TD0_evaluation(env, pi, ite)
+    # print(value_table3)
+
+    value_table4 = TDlambda_evaluation(env, pi, ite)
+    # print(value_table4)
+
+    error1 = np.array(value_table2 - value_table1)
+    error1_avg.append(np.mean(np.abs(error1)))
+
+    error2 = np.array(value_table3 - value_table1)
+    error2_avg.append(np.mean(np.abs(error2)))
+
+    error3 = np.array(value_table4 - value_table1)
+    error3_avg.append(np.mean(np.abs(error3)))
+
 ################################################################################################################################
-print(value_table2 - value_table1)
-
-print(value_table3 - value_table1)
-
-print(value_table4 - value_table1)
+fig = plt.figure()
+plt.plot(ite_ary, error1_avg, label='mc-bs')
+plt.plot(ite_ary, error2_avg, label='td0-bs')
+plt.plot(ite_ary, error3_avg, label='tdn-bs')
+plt.xlabel('iterations')
+plt.ylabel('average error')
+plt.legend()
+plt.show()
 ################################################################################################################################
 env.close()
 ################################################################################################################################
