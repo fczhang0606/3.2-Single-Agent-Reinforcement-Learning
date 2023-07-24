@@ -102,6 +102,25 @@ def mc_evaluation(env, policy, n_episodes=10000) :
 
     return value_table
 ################################################################################################################################
+def mc_evaluation_Q(env, policy, n_episodes=10000) :
+
+    gamma=0.98
+    value_table = np.zeros([env.observation_space.n, env.action_space.n])
+    count_table = np.zeros([env.observation_space.n, env.action_space.n])
+
+    for i in range(n_episodes) :
+        episode = episode_sample(env, policy)
+        G = 0
+
+        for j in range(len(episode)-1, -1, -1) :  # range(i, j) == i ~ j-1
+            (s, a, r, s_next) = episode[j]
+            G = r + gamma*G
+
+            count_table[s, a] = count_table[s, a] + 1
+            value_table[s, a] = value_table[s, a] + (G-value_table[s, a])/count_table[s, a]
+
+    return value_table
+################################################################################################################################
 def TD0_evaluation(env, policy, n_episodes=10000) :
 
     alpha=0.05
