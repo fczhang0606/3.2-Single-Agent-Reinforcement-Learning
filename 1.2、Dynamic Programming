@@ -1,177 +1,353 @@
 ################################################################################################################################
-# https://openai.com/
+# https://github.com/openai/gym/blob/master/gym/envs/toy_text/frozen_lake.py  # 左、下、右、上
 
-# https://gymnasium.farama.org/
-# https://github.com/Farama-Foundation/Gymnasium
-
-# https://gym.openai.com/
-# https://github.com/openai/gym
-# https://github.com/openai/gym/blob/master/gym/envs/toy_text/frozen_lake.py
-
+# https://github.com/boyu-ai/Hands-on-RL
 # https://zhuanlan.zhihu.com/p/468235479?utm_id=0
 ################################################################################################################################
 import gymnasium as gym
 from gymnasium.envs.toy_text.frozen_lake import generate_random_map
+
+import copy
+import matplotlib.pyplot as plt  # https://matplotlib.org/stable/index.html#
 import numpy as np
 import random
 ################################################################################################################################
-def random_policy_test(env) :
+def equiprobability_policy(env) :
 
-    ite_num = 10000
-    ite_len = 100
-    suc_cnt = 0
+    pi = np.ones( [env.observation_space.n, env.action_space.n] )  # 16x4
 
-    for i in range(ite_num) :
+    pi = pi * (1 / env.action_space.n)
 
-        observation, info = env.reset()
-
-        for j in range(ite_len) :
-
-            action = random.randint(0, 3)  # random policy
-
-            observation, reward, terminated, truncated, info = env.step(action)
-            # print(observation)
-            # print(reward)
-            # print(terminated)
-            # print(truncated)
-            # print(info)  # dict[str, Any]
-
-            if terminated or truncated :
-                if reward == 1 :
-                    suc_cnt += 1
-                break
-
-    return suc_cnt/ite_num
+    return pi
 ################################################################################################################################
-def policy_evaluation(env, policy) :
+def policy_evaluation_V(env, pi, epsilon=0.10, gamma=0.98, theta=1e-4) :
 
-    ite_cnt = 0
-    gamma = 0.98
-    threshold = 1e-6
+    old_V = np.zeros(env.observation_space.n)
+    new_V = np.zeros(env.observation_space.n)
+    old_Q = np.zeros( [env.observation_space.n, env.action_space.n] )
+    new_Q = np.zeros( [env.observation_space.n, env.action_space.n] )
 
-    value_table = np.zeros(env.observation_space.n)  # 终止态=0
-
+    cnt = 0
     while True :
+        diff = 0
 
-        ite_cnt += 1
-        pre_value_table = value_table[:]
+        for s in range(env.observation_space.n) :
+            new_V[s] = 0
 
-        for state in range(len(value_table)) :
-            action = policy[state]  # greedy policy + no distribution
+            for a in range(env.action_space.n) :
+                new_Q[s, a] = 0
 
-            v=0
-            for p, next_s, r, done in env.P[state][action] :
-                v += p*(r+gamma*pre_value_table[next_s])  # no pi
-            value_table[state]=v
+                # print(env.P[s][a])
+                for p, next_s, r, done in env.P[s][a] :  # if next_s is done
+                    new_Q[s, a] += p*(r+gamma*old_V[next_s]*(1-done))
 
-        if np.sum(np.abs(pre_value_table-value_table))<threshold and ite_cnt>100 :
-            return value_table
-################################################################################################################################
-def policy_iteration(env) :
+                new_V[s] += pi[s, a]*new_Q[s, a]
 
-    policy = np.zeros(env.observation_space.n)
+            diff += np.abs(new_V[s] - old_V[s])
+            old_V[s] = new_V[s]
 
-    ite_cnt = 0
-    while True :
-        ite_cnt += 1
+        # old_V = new_V  # 直接赋值，精度不够？
 
-        new_value_table = policy_evaluation(env, policy)
-        new_policy = greedy_policy(env, new_value_table)
+        cnt += 1
 
-        if np.all(new_policy == policy) :
-            print('policy achives * in iteration: ' + str(ite_cnt))
+        if diff < theta :
+            print(cnt)
             break
 
-        policy = new_policy
-
-        if ite_cnt % 100 == 0 :
-            print('policy iteration: ' + str(ite_cnt))
-            # print(new_value_table)
-            # print(new_policy)
-
-    return new_policy
+    return old_V
 ################################################################################################################################
-def policy_iteration_test(env) :
+def policy_evaluation_Q(env, pi, epsilon=0.10, gamma=0.98, theta=1e-4) :
 
-    ite_num = 10000
-    ite_len = 100
-    suc_cnt = 0
+    old_V = np.zeros(env.observation_space.n)
+    new_V = np.zeros(env.observation_space.n)
+    old_Q = np.zeros( [env.observation_space.n, env.action_space.n] )
+    new_Q = np.zeros( [env.observation_space.n, env.action_space.n] )
 
-    policy = policy_iteration(env)
-
-    for i in range(ite_num) :
-
-        observation, info = env.reset()
-
-        for j in range(ite_len) :
-
-            action = int(policy[observation])
-            observation, reward, terminated, truncated, info = env.step(action)
-
-            if terminated or truncated :
-                if reward == 1 :
-                    suc_cnt += 1
-                break
-
-    return suc_cnt/ite_num
-################################################################################################################################
-def value_iteration(env) :
-
-    ite_cnt = 0
-    gamma = 0.98
-    threshold = 1e-6
-
-    value_table = np.zeros(env.observation_space.n)  # 终止态=0
-    policy = np.zeros(env.observation_space.n)
-
+    cnt = 0
     while True :
-        ite_cnt += 1
+        diff1 = 0
+        diff2 = 0
 
-        pre_value_table = value_table[:]
-        pre_policy = policy
+        for s in range(env.observation_space.n) :
+            new_V[s] = 0
 
-        for state in range(len(value_table)) :
-            action = policy[state]
-            v=0
-            for p, next_s, r, done in env.P[state][action] :
-                v += p*(r+gamma*pre_value_table[next_s])
-            value_table[state]=v
+            for a in range(env.action_space.n) :
+                new_Q[s, a] = 0
 
-        for state in range(len(value_table)) :
-            Q_value = [0]*4
-            for action in range(0, 4) :
-                for p, next_s, r, done in env.P[state][action] :
-                    Q_value[action] += p*(r+gamma*value_table[next_s])
-            policy[state] = Q_value.index(max(Q_value))
+                # print(env.P[s][a])
+                for p, next_s, r, done in env.P[s][a] :  # if next_s is done
+                        new_V[next_s] = 0
 
-        if np.sum(np.abs(pre_value_table-value_table))<threshold \
-        and np.all(pre_policy == policy) \
-        and ite_cnt>100 :
-            print('policy achives * in iteration: ' + str(ite_cnt))
+                        for next_a in range(env.action_space.n) :
+                            new_V[next_s] += pi[next_s, next_a]*old_Q[next_s, next_a]
+
+                        new_Q[s, a] += p*(r+gamma*new_V[next_s]*(1-done))
+
+                diff1 += np.abs(new_Q[s, a] - old_Q[s, a])
+                old_Q[s, a] = new_Q[s, a]
+
+        for s in range(env.observation_space.n) :
+            new_V[s] = 0
+            for a in range(env.action_space.n) :
+                new_V[s] += pi[s, a]*old_Q[s, a]
+            diff2 += np.abs(new_V[s] - old_V[s])
+            old_V[s] = new_V[s]
+
+        cnt += 1
+
+        if diff1 < theta :
+            print(cnt)
+            print(old_V)
             break
 
-        if ite_cnt % 100 == 0 :
-            print('value iteration: ' + str(ite_cnt))
-            # print(value_table)
-            # print(policy)
+#         if diff2 < theta :
+#             print(cnt)
+#             print(old_V)
+#             break
 
-    return policy
+    return old_Q
 ################################################################################################################################
-def value_iteration_test(env) :
+def policy_improvement_greedy(env, Q) :
 
-    ite_num = 10000
-    ite_len = 100
+    new_pi = np.zeros( [env.observation_space.n, env.action_space.n] )
+
+    maxQ = np.max(Q, axis=1)
+    #print(maxQ)
+
+    for s in range(env.observation_space.n) :
+        q_cnt = 0
+
+        for a in range(env.action_space.n) :
+            if Q[s, a] == maxQ[s] :
+                q_cnt += 1
+
+        for a in range(env.action_space.n) :
+            if Q[s, a] == maxQ[s] :
+                new_pi[s, a] = 1/q_cnt
+            else :
+                new_pi[s, a] = 0
+
+    return new_pi
+################################################################################################################################
+def policy_improvement_epsilon_greedy(env, Q, epsilon=0.10) :
+
+    new_pi = np.zeros( [env.observation_space.n, env.action_space.n] )
+
+    maxQ = np.max(Q, axis=1)
+    #print(maxQ)
+
+    for s in range(env.observation_space.n) :
+        q_cnt = 0
+
+        for a in range(env.action_space.n) :
+            if Q[s, a] == maxQ[s] :
+                q_cnt += 1
+
+        for a in range(env.action_space.n) :
+            if Q[s, a] == maxQ[s] :
+                new_pi[s, a] = epsilon/env.action_space.n + ( (1-epsilon)/q_cnt )
+            else :
+                new_pi[s, a] = epsilon/env.action_space.n
+
+    return new_pi
+################################################################################################################################
+def policy_iteration_1(env, pi, epsilon=0.10, gamma=0.98, theta=1e-2) :
+
+    old_pi = copy.deepcopy(pi)
+    new_pi = copy.deepcopy(pi)
+
+    cnt = 0
+    while True :
+        cnt += 1
+
+        diff =0
+
+        Q      = policy_evaluation_Q(env, old_pi)
+        print(Q)
+
+        new_pi = policy_improvement_greedy(env, Q)
+        # new_pi = policy_improvement_epsilon_greedy(env, Q)
+        # new_pi = policy_improvement_epsilon_greedy(env, Q, epsilon/np.log(cnt+1))
+        # new_pi = policy_improvement_epsilon_greedy(env, Q, epsilon/cnt)
+        print(new_pi)
+
+        diff = np.sum(np.abs(new_pi - old_pi))
+
+        old_pi = new_pi
+
+        if diff < theta :
+            print(cnt)
+            break
+
+    return old_pi
+################################################################################################################################
+def policy_iteration_2(env, pi, epsilon=0.10, gamma=0.98, theta=1e-2) :
+
+    old_pi = copy.deepcopy(pi)
+    new_pi = copy.deepcopy(pi)
+
+    cnt = 0
+    while True :
+        cnt += 1
+
+        diff = 0
+
+        Q      = policy_evaluation_Q(env, old_pi)
+        print(Q)
+
+        # new_pi = policy_improvement_greedy(env, Q)
+        new_pi = policy_improvement_epsilon_greedy(env, Q)
+        # new_pi = policy_improvement_epsilon_greedy(env, Q, epsilon/np.log(cnt+1))
+        # new_pi = policy_improvement_epsilon_greedy(env, Q, epsilon/cnt)
+        print(new_pi)
+
+        diff = np.sum(np.abs(new_pi - old_pi))
+
+        old_pi = new_pi
+
+        if diff < theta :
+            print(cnt)
+            break
+
+    return old_pi
+################################################################################################################################
+def policy_iteration_3(env, pi, epsilon=0.10, gamma=0.98, theta=1e-2) :
+
+    old_pi = copy.deepcopy(pi)
+    new_pi = copy.deepcopy(pi)
+
+    cnt = 0
+    while True :
+        cnt += 1
+
+        diff = 0
+
+        Q      = policy_evaluation_Q(env, old_pi)
+        print(Q)
+
+        # new_pi = policy_improvement_greedy(env, Q)
+        # new_pi = policy_improvement_epsilon_greedy(env, Q)
+        new_pi = policy_improvement_epsilon_greedy(env, Q, epsilon/np.log(cnt+1))
+        # new_pi = policy_improvement_epsilon_greedy(env, Q, epsilon/cnt)
+        print(new_pi)
+
+        diff = np.sum(np.abs(new_pi - old_pi))
+
+        old_pi = new_pi
+
+        if diff < theta :
+            print(cnt)
+            break
+
+    return old_pi
+################################################################################################################################
+def policy_iteration_4(env, pi, epsilon=0.10, gamma=0.98, theta=1e-2) :
+
+    old_pi = copy.deepcopy(pi)
+    new_pi = copy.deepcopy(pi)
+
+    cnt = 0
+    while True :
+        cnt += 1
+
+        diff = 0
+
+        Q      = policy_evaluation_Q(env, old_pi)
+        print(Q)
+
+        # new_pi = policy_improvement_greedy(env, Q)
+        # new_pi = policy_improvement_epsilon_greedy(env, Q)
+        # new_pi = policy_improvement_epsilon_greedy(env, Q, epsilon/np.log(cnt+1))
+        new_pi = policy_improvement_epsilon_greedy(env, Q, epsilon/cnt)
+        print(new_pi)
+
+        diff = np.sum(np.abs(new_pi - old_pi))
+
+        old_pi = new_pi
+
+        if diff < theta :
+            print(cnt)
+            break
+
+    return old_pi
+################################################################################################################################
+def value_iteration(env, pi, epsilon=0.10, gamma=0.98, theta=1e-4) :
+
+    old_V  = np.zeros(env.observation_space.n)
+    new_V  = np.zeros(env.observation_space.n)
+    old_Q  = np.zeros( [env.observation_space.n, env.action_space.n] )
+    new_Q  = np.zeros( [env.observation_space.n, env.action_space.n] )
+
+    old_pi = copy.deepcopy(pi)
+    new_pi = copy.deepcopy(pi)
+
+    cnt = 0
+    while True :
+        diff = 0
+
+
+        for s in range(env.observation_space.n) :
+            new_V[s] = 0
+            for a in range(env.action_space.n) :
+                new_Q[s, a] = 0
+                # print(env.P[s][a])
+                for p, next_s, r, done in env.P[s][a] :  # if next_s is done
+                    new_Q[s, a] += p*(r+gamma*old_V[next_s]*(1-done))
+                new_V[s] += old_pi[s, a]*new_Q[s, a]
+            diff += new_V[s] - old_V[s]
+            old_V[s] = new_V[s]
+        # old_V = new_V  # 直接赋值，精度不够？
+
+
+        for s in range(env.observation_space.n) :
+            for a in range(env.action_space.n) :
+                new_Q[s, a] = 0
+                # print(env.P[s][a])
+                for p, next_s, r, done in env.P[s][a] :  # if next_s is done
+                    new_Q[s, a] += p*(r+gamma*old_V[next_s]*(1-done))
+                old_Q[s, a] = new_Q[s, a]
+
+
+        maxQ = np.max(old_Q, axis=1)
+        #print(maxQ)
+        for s in range(env.observation_space.n) :
+            q_cnt = 0
+            for a in range(env.action_space.n) :
+                if old_Q[s, a] == maxQ[s] :
+                    q_cnt += 1
+
+            for a in range(env.action_space.n) :
+                if old_Q[s, a] == maxQ[s] :
+                    new_pi[s, a] = 1/q_cnt
+                else :
+                    new_pi[s, a] = 0
+                old_pi[s, a] = new_pi[s, a]
+
+
+        cnt += 1
+
+
+        if diff < theta :
+            print(cnt)
+            break
+
+    print(old_V)
+    print(old_Q)
+    print(old_pi)
+
+    return old_pi
+################################################################################################################################
+def policy_test(env, pi, ite_num=1000, ite_len=100) :
+
     suc_cnt = 0
-
-    policy = value_iteration(env)
-
     for i in range(ite_num) :
 
         observation, info = env.reset()
 
         for j in range(ite_len) :
 
-            action = int(policy[observation])
+            action = np.random.choice(env.action_space.n, p=pi[observation])
+
             observation, reward, terminated, truncated, info = env.step(action)
 
             if terminated or truncated :
@@ -179,6 +355,7 @@ def value_iteration_test(env) :
                     suc_cnt += 1
                 break
 
+    print(suc_cnt/ite_num)
     return suc_cnt/ite_num
 ################################################################################################################################
 env=gym.make('FrozenLake-v1', desc=None, map_name="4x4", is_slippery=True)
@@ -187,13 +364,18 @@ env=gym.make('FrozenLake-v1', desc=None, map_name="4x4", is_slippery=True)
 observation, info = env.reset(seed=42)
 # print(observation)
 # print(info)
-################################################################################################################################
-print(random_policy_test(env))
-print(policy_iteration_test(env))
-print(value_iteration_test(env))
 
-env.close()
+pi = equiprobability_policy(env)
+# print(pi)
 ################################################################################################################################
-################################################################################################################################
+#print(policy_evaluation_V(env, pi))
+#Q = policy_evaluation_Q(env, pi)
+#print(Q)
+policy_test(env, pi)
+policy_test(env, policy_iteration_1(env, pi))
+policy_test(env, policy_iteration_2(env, pi))
+policy_test(env, policy_iteration_3(env, pi))
+policy_test(env, policy_iteration_4(env, pi))
+policy_test(env, value_iteration(env, pi))
 ################################################################################################################################
 
