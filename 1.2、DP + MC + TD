@@ -3,6 +3,8 @@
 
 # https://github.com/boyu-ai/Hands-on-RL
 # https://zhuanlan.zhihu.com/p/468235479?utm_id=0
+# https://blog.csdn.net/jiebaoshayebuhui/article/details/128487283
+# https://zhuanlan.zhihu.com/p/54936262
 ################################################################################################################################
 import gymnasium as gym
 from gymnasium.envs.toy_text.frozen_lake import generate_random_map
@@ -174,6 +176,36 @@ def mc_evaluation_Q(env, pi, n_episodes=500000, gamma=0.98) :
 
     return new_Q
 ################################################################################################################################
+def TD0_evaluation(env, pi, n_episodes=500000, gamma=0.98, alpha=0.05) :
+
+    new_V = np.zeros(env.observation_space.n)
+
+    for i in range(n_episodes) :
+        episode = episode_sample(env, pi)
+
+        for j in range( len(episode) ) :
+            (s, a, r, next_s) = episode[j]  # expolit all the transitions
+            new_V[s] += alpha*(r+gamma*new_V[next_s]-new_V[s])
+
+    return new_V
+################################################################################################################################
+def TDlambda_evaluation(env, pi, n_episodes=500000, gamma=0.98, TDlambda = 0.98, alpha=0.05) :
+
+    new_V = np.zeros(env.observation_space.n)
+    new_T = np.zeros(env.observation_space.n)
+
+    for i in range(n_episodes) :
+        episode = episode_sample(env, pi)
+
+        for j in range( len(episode) ) :
+            (s, a, r, next_s) = episode[j]
+
+            new_T = gamma*TDlambda*new_T
+            new_T[s] += 1
+            new_V[s] += alpha*(r+gamma*new_V[next_s]-new_V[s])*new_T[s]
+
+    return new_V
+################################################################################################################################
 def policy_improvement_greedy(env, Q) :
 
     new_pi = np.zeros( [env.observation_space.n, env.action_space.n] )
@@ -234,7 +266,7 @@ def policy_iteration_1(env, pi, epsilon=0.10, gamma=0.98, theta=1e-4) :
 
         new_pi = policy_improvement_greedy(env, Q)
         # new_pi = policy_improvement_epsilon_greedy(env, Q)
-        # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(cnt+1), 4e-2))
+        # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(2*cnt), 4e-2))
         # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/cnt, 4e-2))
         print(new_pi)
 
@@ -264,7 +296,7 @@ def mc_iteration_1(env, pi, epsilon=0.10, gamma=0.98, theta=1e-4) :
 
         new_pi = policy_improvement_greedy(env, Q)
         # new_pi = policy_improvement_epsilon_greedy(env, Q)
-        # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(cnt+1), 4e-2))
+        # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(2*cnt), 4e-2))
         # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/cnt, 4e-2))
         print(new_pi)
 
@@ -294,7 +326,7 @@ def policy_iteration_2(env, pi, epsilon=0.10, gamma=0.98, theta=1e-4) :
 
         # new_pi = policy_improvement_greedy(env, Q)
         new_pi = policy_improvement_epsilon_greedy(env, Q)
-        # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(cnt+1), 4e-2))
+        # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(2*cnt), 4e-2))
         # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/cnt, 4e-2))
         print(new_pi)
 
@@ -324,7 +356,7 @@ def mc_iteration_2(env, pi, epsilon=0.10, gamma=0.98, theta=1e-4) :
 
         # new_pi = policy_improvement_greedy(env, Q)
         new_pi = policy_improvement_epsilon_greedy(env, Q)
-        # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(cnt+1), 4e-2))
+        # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(2*cnt), 4e-2))
         # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/cnt, 4e-2))
         print(new_pi)
 
@@ -354,8 +386,8 @@ def policy_iteration_3(env, pi, epsilon=0.10, gamma=0.98, theta=1e-4) :
 
         # new_pi = policy_improvement_greedy(env, Q)
         # new_pi = policy_improvement_epsilon_greedy(env, Q)
-        print(max(epsilon/np.log(cnt+1), 4e-2))
-        new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(cnt+1), 4e-2))
+        print(max(epsilon/np.log(2*cnt), 4e-2))
+        new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(2*cnt), 4e-2))
         # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/cnt, 4e-2))
         print(new_pi)
 
@@ -385,8 +417,8 @@ def mc_iteration_3(env, pi, epsilon=0.10, gamma=0.98, theta=1e-4) :
 
         # new_pi = policy_improvement_greedy(env, Q)
         # new_pi = policy_improvement_epsilon_greedy(env, Q)
-        print(max(epsilon/np.log(cnt+1), 4e-2))
-        new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(cnt+1), 4e-2))
+        print(max(epsilon/np.log(2*cnt), 4e-2))
+        new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(2*cnt), 4e-2))
         # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/cnt, 4e-2))
         print(new_pi)
 
@@ -416,7 +448,7 @@ def policy_iteration_4(env, pi, epsilon=0.10, gamma=0.98, theta=1e-4) :
 
         # new_pi = policy_improvement_greedy(env, Q)
         # new_pi = policy_improvement_epsilon_greedy(env, Q)
-        # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(cnt+1), 4e-2))
+        # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(2*cnt), 4e-2))
         print(max(epsilon/cnt, 4e-2))
         new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/cnt, 4e-2))
         print(new_pi)
@@ -447,7 +479,7 @@ def mc_iteration_4(env, pi, epsilon=0.10, gamma=0.98, theta=1e-4) :
 
         # new_pi = policy_improvement_greedy(env, Q)
         # new_pi = policy_improvement_epsilon_greedy(env, Q)
-        # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(cnt+1), 4e-2))
+        # new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/np.log(2*cnt), 4e-2))
         print(max(epsilon/cnt, 4e-2))
         new_pi = policy_improvement_epsilon_greedy(env, Q, max(epsilon/cnt, 4e-2))
         print(new_pi)
@@ -553,7 +585,8 @@ def policy_test(env, pi, ite_num=3000, ite_len=100) :
 env=gym.make('FrozenLake-v1', desc=None, map_name="4x4", is_slippery=True)
 # gym.make('FrozenLake-v1', desc=generate_random_map(size=8))
 
-observation, info = env.reset(seed=42)
+# observation, info = env.reset(seed=42)
+observation, info = env.reset()
 # print(observation)
 # print(info)
 
@@ -562,6 +595,42 @@ pi = equiprobability_policy(env)
 ################################################################################################################################
 print(policy_evaluation_V(env, pi))
 print(mc_evaluation_V(env, pi))
+print(TD0_evaluation(env, pi))
+print(TDlambda_evaluation(env, pi))
+################################################################################################################################
+V1 = policy_evaluation_V(env, pi)
+
+error1_avg = []
+error2_avg = []
+error3_avg = []
+
+episodes_ary = np.arange(100, 10001, 50)
+for epis in episodes_ary :
+
+    V2 = mc_evaluation_V(env, pi, epis)
+
+    V3 = TD0_evaluation(env, pi, epis)
+
+    V4 = TDlambda_evaluation(env, pi, epis)
+
+    error1 = np.array(V2 - V1)
+    error1_avg.append(np.mean(np.abs(error1)))
+
+    error2 = np.array(V3 - V1)
+    error2_avg.append(np.mean(np.abs(error2)))
+
+    error3 = np.array(V4 - V1)
+    error3_avg.append(np.mean(np.abs(error3)))
+
+fig = plt.figure()
+plt.plot(episodes_ary, error1_avg, label='mc-bs')
+plt.plot(episodes_ary, error2_avg, label='td0-bs')
+plt.plot(episodes_ary, error3_avg, label='tdn-bs')
+plt.xlabel('episodes')
+plt.ylabel('average error')
+plt.legend()
+plt.show()
+################################################################################################################################
 print(policy_evaluation_Q(env, pi))
 print(mc_evaluation_Q(env, pi))
 policy_test(env, pi)
