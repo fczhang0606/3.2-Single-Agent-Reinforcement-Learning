@@ -1,0 +1,158 @@
+################################################################################################################################
+# 在每一个episode和一系列episodes之中，agent随时改变策略，与环境进行交互
+################################################################################################################################
+# https://github.com/openai/gym/blob/master/gym/envs/toy_text/frozen_lake.py  # 左、下、右、上
+
+# https://github.com/boyu-ai/Hands-on-RL
+################################################################################################################################
+import gymnasium as gym
+from gymnasium.envs.toy_text.frozen_lake import generate_random_map
+
+import copy
+import matplotlib.pyplot as plt  # https://matplotlib.org/stable/index.html#
+import numpy as np
+import random
+################################################################################################################################
+def equiprobability_policy(env) :
+
+    pi = np.ones( [env.observation_space.n, env.action_space.n] )  # 16x4
+
+    pi = pi * (1/env.action_space.n)
+
+    return pi
+################################################################################################################################
+class agent_sarsa :
+
+
+    def __init__(self, env, pi, epsilon=0.10, gamma=0.98, alpha=0.05) :
+
+        self.env     = env  # 只读取env属性，不作写入和交互
+        self.pi      = pi
+        self.epsilon = epsilon
+        self.gamma   = gamma
+        self.alpha   = alpha
+
+        self.Q       = np.zeros( [self.env.observation_space.n, self.env.action_space.n] )
+
+
+    def Q_evaluation(self, s, a, r, s_, a_) :
+
+        td_error = r+self.gamma*self.Q[s_, a_] - self.Q[s, a]
+        self.Q[s, a] += self.alpha * td_error
+
+        return self.Q
+
+
+    def policy_improvement(self) :
+
+        maxQ = np.max(self.Q, axis=1)
+
+        for s in range(self.env.observation_space.n) :
+            q_cnt = 0
+
+            for a in range(self.env.action_space.n) :
+                if self.Q[s, a] == maxQ[s] :  # 至少有1
+                    q_cnt += 1
+
+            for a in range(self.env.action_space.n) :
+                if self.Q[s, a] == maxQ[s] :
+                    self.pi[s, a] = self.epsilon/self.env.action_space.n + \
+                                    ( (1-self.epsilon)/q_cnt )
+                else :
+                    self.pi[s, a] = self.epsilon/self.env.action_space.n
+
+        return self.pi
+
+
+    def step(self, obs) :
+
+        act = np.random.choice(self.env.action_space.n, p=self.pi[obs])
+
+        return act
+################################################################################################################################
+env=gym.make('FrozenLake-v1', desc=None, map_name="4x4", is_slippery=True)
+# gym.make('FrozenLake-v1', desc=generate_random_map(size=8))
+
+# obs, _ = env.reset(seed=42)
+obs, _ = env.reset()
+# print(obs)
+# print(_)
+
+pi = equiprobability_policy(env)
+# print(pi)
+
+agent_1 = agent_sarsa(env, pi)
+################################################################################################################################
+episodes_ary  = np.arange(200, 50001, 200)
+suc_rate_list = []
+
+
+for episodes_num in episodes_ary :
+
+    agent_1.Q  = agent_1.Q*0
+    agent_1.pi = pi
+
+    suc_cnt    = 0
+    for episodes_cnt in range(episodes_num) :
+
+        obs, _ = env.reset()
+        act    = agent_1.step(obs)
+
+        while True :
+
+            # 交互
+            obs_, reward, terminated, truncated, _ = env.step(act)
+
+
+            # 为什么不根据已经到达的新状态和回报，进行当前策略的修正后，再选择并执行下一步动作
+            # 因为下一步动作没有选择，没有Q值依据，就无法对当前Q表进行更新，无法生成新的策略
+            # （假设虚拟选择，获取Q值，但不执行？要依据什么策略选择？假设每个动作，都会考虑被选择？）
+            act_ = agent_1.step(obs_)  # SARSA沿用原有策略进行虚拟选择
+
+            # 虚拟选择，获得Q值依据，进行Q表更新
+            agent_1.Q_evaluation(obs, act, reward, obs_, act_)
+
+            # 根据更新的Q表，生成新的策略
+            agent_1.policy_improvement()
+
+            # 为什么不用新生成的策略，来指导当前状态下的动作
+            # 不同的虚拟选择，会导致不同的Q表更新，从而生成不同的新策略
+            # 如果新策略，在当前状态下的动作选择，与起初的虚拟选择策略不一致？
+            # 因果不统一
+
+
+            # 下一状态转移
+            obs = obs_
+
+            # SARSA的下一状态执行动作，是使用原有策略的虚拟选择的动作
+            # 使用同一个原有策略，进行虚拟选择，以及真实执行
+            act = act_
+
+
+            if terminated or truncated :
+                if reward == 1 :
+                    suc_cnt += 1
+                break
+
+
+    suc_rate = suc_cnt / episodes_num
+
+    print(episodes_num)
+    print(suc_rate)
+    suc_rate_list.append(suc_rate)
+
+
+print(agent_1.Q)
+
+
+fig = plt.figure()
+plt.plot(episodes_ary, suc_rate_list, label='sarsa')
+plt.xlabel('episodes')
+plt.ylabel('suc_rate')
+plt.legend()
+plt.show()
+################################################################################################################################
+env.close()
+################################################################################################################################
+################################################################################################################################
+################################################################################################################################
