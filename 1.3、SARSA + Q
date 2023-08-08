@@ -70,6 +70,55 @@ class agent_sarsa :
 
         return act
 ################################################################################################################################
+class agent_Qlearning :
+
+
+    def __init__(self, env, pi, epsilon=0.10, gamma=0.98, alpha=0.05) :
+
+        self.env     = env  # 只读取env属性，不作写入和交互
+        self.pi      = pi
+        self.epsilon = epsilon
+        self.gamma   = gamma
+        self.alpha   = alpha
+
+        self.Q       = np.zeros( [self.env.observation_space.n, self.env.action_space.n] )
+
+
+    def Q_evaluation(self, s, a, r, s_) :
+
+        td_error = r+self.gamma*self.Q[s_].max() - self.Q[s, a]
+        self.Q[s, a] += self.alpha * td_error
+
+        return self.Q
+
+
+    def policy_improvement(self) :
+
+        maxQ = np.max(self.Q, axis=1)
+
+        for s in range(self.env.observation_space.n) :
+            q_cnt = 0
+
+            for a in range(self.env.action_space.n) :
+                if self.Q[s, a] == maxQ[s] :  # 至少有1
+                    q_cnt += 1
+
+            for a in range(self.env.action_space.n) :
+                if self.Q[s, a] == maxQ[s] :
+                    self.pi[s, a] = self.epsilon/self.env.action_space.n + \
+                                    ( (1-self.epsilon)/q_cnt )
+                else :
+                    self.pi[s, a] = self.epsilon/self.env.action_space.n
+
+        return self.pi
+
+
+    def step(self, obs) :
+
+        act = np.random.choice(self.env.action_space.n, p=self.pi[obs])
+
+        return act
+################################################################################################################################
 env=gym.make('FrozenLake-v1', desc=None, map_name="4x4", is_slippery=True)
 # gym.make('FrozenLake-v1', desc=generate_random_map(size=8))
 
@@ -82,8 +131,9 @@ pi = equiprobability_policy(env)
 # print(pi)
 
 agent_1 = agent_sarsa(env, pi)
+agent_2 = agent_Qlearning(env, pi)
 ################################################################################################################################
-episodes_ary  = np.arange(200, 50001, 200)
+episodes_ary  = np.arange(200, 20001, 200)
 suc_rate_list = []
 
 
@@ -107,26 +157,28 @@ for episodes_num in episodes_ary :
             # 为什么不根据已经到达的新状态和回报，进行当前策略的修正后，再选择并执行下一步动作
             # 因为下一步动作没有选择，没有Q值依据，就无法对当前Q表进行更新，无法生成新的策略
             # （假设虚拟选择，获取Q值，但不执行？要依据什么策略选择？假设每个动作，都会考虑被选择？）
-            act_ = agent_1.step(obs_)  # SARSA沿用原有策略进行虚拟选择
 
-            # 虚拟选择，获得Q值依据，进行Q表更新
-            agent_1.Q_evaluation(obs, act, reward, obs_, act_)
+            act_v = agent_1.step(obs_)  # 用待估计的策略，进行虚拟选择，SARSA使用被生成的行为策略选择
+            act_r = agent_1.step(obs_)  # 真实执行的行为策略，进行实际动作选择，SARSA使用epsilon-G
 
-            # 根据更新的Q表，生成新的策略
+            # 虚拟选择的动作，获得Q值依据，进行Q表更新
+            agent_1.Q_evaluation(obs, act, reward, obs_, act_v)
+
+            # 根据更新的Q表，生成新的行为策略
             agent_1.policy_improvement()
 
-            # 为什么不用新生成的策略，来指导当前状态下的动作
-            # 不同的虚拟选择，会导致不同的Q表更新，从而生成不同的新策略
-            # 如果新策略，在当前状态下的动作选择，与起初的虚拟选择策略不一致？
+            # 为什么不用新生成的策略，来指导当前状态下的动作act_r
+            # act_r = agent_1.step(obs_)在agent_1.policy_improvement()之后？
+            # 不同的虚拟选择act_v，会导致不同的Q表更新，从而生成不同的新策略
+            # 如果新策略，在当前状态下的动作选择，与起初的虚拟选择不一致？
             # 因果不统一
 
 
             # 下一状态转移
             obs = obs_
 
-            # SARSA的下一状态执行动作，是使用原有策略的虚拟选择的动作
-            # 使用同一个原有策略，进行虚拟选择，以及真实执行
-            act = act_
+            # 下一动作转移
+            act = act_r
 
 
             if terminated or truncated :
@@ -142,7 +194,7 @@ for episodes_num in episodes_ary :
     suc_rate_list.append(suc_rate)
 
 
-print(agent_1.Q)
+print(agent_1.Q)  # 估算的是epsilon-greedy策略的Q
 
 
 fig = plt.figure()
@@ -152,7 +204,77 @@ plt.ylabel('suc_rate')
 plt.legend()
 plt.show()
 ################################################################################################################################
+episodes_ary  = np.arange(200, 20001, 200)
+suc_rate_list = []
+
+
+for episodes_num in episodes_ary :
+
+    agent_2.Q  = agent_2.Q*0
+    agent_2.pi = pi
+
+    suc_cnt    = 0
+    for episodes_cnt in range(episodes_num) :
+
+        obs, _ = env.reset()
+        act    = agent_2.step(obs)
+
+        while True :
+
+            # 交互
+            obs_, reward, terminated, truncated, _ = env.step(act)
+
+
+            # 为什么不根据已经到达的新状态和回报，进行当前策略的修正后，再选择并执行下一步动作
+            # 因为下一步动作没有选择，没有Q值依据，就无法对当前Q表进行更新，无法生成新的策略
+            # （假设虚拟选择，获取Q值，但不执行？要依据什么策略选择？假设每个动作，都会考虑被选择？）
+
+            # act_v = a_maxQ  # 用待估计的策略，进行虚拟选择，Qlearning使用greedy
+            act_r = agent_2.step(obs_)  # 真实执行的行为策略，进行实际动作选择，Qlearning使用epsilon-G
+
+            # 虚拟选择的动作，获得Q值依据，进行Q表更新
+            agent_2.Q_evaluation(obs, act, reward, obs_)  # act_v
+
+            # 根据更新的Q表，生成新的行为策略
+            agent_2.policy_improvement()
+
+            # 为什么不用新生成的策略，来指导当前状态下的动作act_r
+            # act_r = agent_2.step(obs_)在agent_2.policy_improvement()之后？
+            # 不同的虚拟选择act_v，会导致不同的Q表更新，从而生成不同的新策略
+            # 如果新策略，在当前状态下的动作选择，与起初的虚拟选择不一致？
+            # 因果不统一
+
+
+            # 下一状态转移
+            obs = obs_
+
+            # 下一动作转移
+            act = act_r
+
+
+            if terminated or truncated :
+                if reward == 1 :
+                    suc_cnt += 1
+                break
+
+
+    suc_rate = suc_cnt / episodes_num
+
+    print(episodes_num)
+    print(suc_rate)
+    suc_rate_list.append(suc_rate)
+
+
+print(agent_2.Q)  # 估算的是epsilon-greedy策略的Q
+
+
+fig = plt.figure()
+plt.plot(episodes_ary, suc_rate_list, label='Qlearning')
+plt.xlabel('episodes')
+plt.ylabel('suc_rate')
+plt.legend()
+plt.show()
+################################################################################################################################
 env.close()
 ################################################################################################################################
-################################################################################################################################
-################################################################################################################################
+
