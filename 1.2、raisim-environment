@@ -7,6 +7,54 @@ https://raisim.com/sections/Installation.html
 https://raisim.com/sections/RaiSimPy.html
 ################################################################################################################################
 ################################################################################################################################
+import os
+import numpy as np
+import raisimpy as raisim
+import math
+import time
+
+raisim.World.setLicenseFile(os.path.dirname(os.path.abspath(__file__)) + "/../../.raisim/activation.raisim")
+world = raisim.World()
+ground = world.addGround()
+
+# launch raisim server
+server = raisim.RaisimServer(world)
+server.launchServer(8080)
+
+visSphere = server.addVisualSphere("v_sphere", 1, 1, 1, 1, 1)
+visBox = server.addVisualBox("v_box", 1, 1, 1, 1, 1, 1, 1)
+visCylinder = server.addVisualCylinder("v_cylinder", 1, 1, 0, 1, 0, 1)
+visCapsule = server.addVisualCapsule("v_capsule", 1, 0.5, 0, 0, 1, 1)
+
+laikago = server.addVisualArticulatedSystem("v_laikago", os.path.dirname(os.path.abspath(__file__)) + "/../../raisim_workspace/test/laikago_ros-master/laikago_description/urdf/laikago.urdf")
+laikago.setGeneralizedCoordinate(np.array([0, 0, 3.54, 1.0, 0.0, 0.0, 0.0, 0.03, 0.4, -0.8, -0.03, 0.4, -0.8, 0.03, -0.4, 0.8, -0.03, -0.4, 0.8]))
+laikago.setColor(0.5, 0.0, 0.0, 0.5)
+
+visSphere.setPosition(np.array([2, 0, 0]))
+visCylinder.setPosition(np.array([0, 2, 0]))
+visCapsule.setPosition(np.array([2, 2, 0]))
+
+lines = server.addVisualPolyLine("lines")
+lines.setColor(0, 0, 1, 1)
+
+print(1)
+for i in range(0, 100):
+    lines.addPoint(np.array([math.sin(i * 0.1), math.cos(i * 0.1), i * 0.01]))
+
+print(2)
+counter = 0
+
+for i in range(500000):
+    counter = counter + 1
+    visBox.setColor(1, 1, (counter % 255 + 1) / 256., 1)
+    visSphere.setColor(1, (counter % 255 + 1) / 256., 1, 1)
+    lines.setColor(1 - (counter % 255 + 1) / 256., 1, (counter % 255 + 1) / 256., 1)
+    visBox.setBoxSize((counter % 255 + 1) / 256. + 0.01, 1, 1)
+    time.sleep(world.getTimeStep())
+
+server.killServer()
+################################################################################################################################
+################################################################################################################################
 https://zhuanlan.zhihu.com/p/642040085
 
 mkdir ~/raisim_workspace
@@ -16,7 +64,7 @@ cd ~/raisim_workspace
 git clone https://github.com/raisimTech/raisimLib.git
 cd ~/raisim_workspace/raisimLib
 mkdir build
-cd build
+cd ~/raisim_workspace/raisimLib/build
 cmake .. -DCMAKE_INSTALL_PREFIX=/home/zhfc/raisim_build -DRAISIM_EXAMPLE=ON -DRAISIM_PY=ON -DPYTHON_EXECUTABLE=$(python3 -c "import sys; print(sys.executable)")
 make install -j4
 
@@ -40,16 +88,16 @@ sudo apt-get install libgles2-mesa-dev libxt-dev libxaw7-dev libsdl2-dev libzzip
 
 cd /home/zhfc/raisim_workspace
 git clone https://github.com/leggedrobotics/ogre.git
-cd ogre
+cd /home/zhfc/raisim_workspace/ogre
 git checkout raisimOgre
 mkdir build
-cd build
+cd /home/zhfc/raisim_workspace/ogre/build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/zhfc/raisim_build -DOGRE_BUILD_COMPONENT_BITES=ON -DOGRE_BUILD_DEPENDENCIES=OFF -DOGRE_BUILD_SAMPLES=False
 make install -j8
 
 cd /home/zhfc/raisim_workspace
 git clone https://github.com/raisimTech/raisimOgre.git
-cd raisimOgre && mkdir build && cd build
+cd /home/zhfc/raisim_workspace/raisimOgre && mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/home/zhfc/raisim_build -DCMAKE_INSTALL_PREFIX=/home/zhfc/raisim_build -DRAISIM_OGRE_EXAMPLES=ON
 make install -j8
 ################################################################################################################################
