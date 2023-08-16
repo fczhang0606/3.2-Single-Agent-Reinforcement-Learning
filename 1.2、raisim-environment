@@ -102,5 +102,21 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/home/zhfc/raisim_build 
 make install -j8
 ################################################################################################################################
 ################################################################################################################################
+conda create -n uavs
+conda activate uavs
+cd /home/zhfc/anaconda3/envs/uavs
 
+conda install python=3.10
+conda install -c conda-forge pybind11
+
+pip install numpy
+pip install params
+pip install controller
+# pip install controller.quad_utils
+
+cd ~/raisim_workspace/test
+python test_laikago.py
+python test_huan_line_quad.py
+################################################################################################################################
+################################################################################################################################
 
