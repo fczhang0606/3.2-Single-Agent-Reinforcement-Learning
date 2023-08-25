@@ -1,16 +1,59 @@
 ################################################################################################################################
-################################################################################################################################
 https://raisim.com/
 https://raisim.com/sections/License.html
 https://github.com/raisimTech/raisimlib
 https://raisim.com/sections/Installation.html
 https://raisim.com/sections/RaiSimPy.html
 ################################################################################################################################
+https://zhuanlan.zhihu.com/p/642040085
+
+mkdir ~/raisim_workspace
+mkdir ~/raisim_build
+
+cd ~/raisim_workspace
+git clone https://github.com/raisimTech/raisimLib.git
+cd ~/raisim_workspace/raisimLib
+mkdir build
+cd ~/raisim_workspace/raisimLib/build
+cmake .. -DCMAKE_INSTALL_PREFIX=/home/zhfc/raisim_build -DRAISIM_EXAMPLE=ON -DRAISIM_PY=ON -DPYTHON_EXECUTABLE=$(python3 -c "import sys; print(sys.executable)")
+make install -j4
+
+gedit ~/.bashrc
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/zhfc/raisim_build/lib
+export PYTHONPATH=$PYTHONPATH:/home/zhfc/raisim_build/lib
+source ~/.bashrc
+
+cd /home/zhfc
+mkdir .raisim
+/home/zhfc/.raisim/activation.raisim  #lisense
+
+cd /home/zhfc/raisim_workspace/raisimLib/raisimUnity/linux
+./raisimUnity.x86_64
+
+cd /home/zhfc/raisim_workspace/raisimLib/build/examples
+./anymals
 ################################################################################################################################
-import os
-import numpy as np
-import raisimpy as raisim
+sudo apt-get install libgles2-mesa-dev libxt-dev libxaw7-dev libsdl2-dev libzzip-dev libfreeimage-dev libfreetype6-dev libpugixml-dev
+
+cd /home/zhfc/raisim_workspace
+git clone https://github.com/leggedrobotics/ogre.git
+cd /home/zhfc/raisim_workspace/ogre
+git checkout raisimOgre
+mkdir build
+cd /home/zhfc/raisim_workspace/ogre/build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/zhfc/raisim_build -DOGRE_BUILD_COMPONENT_BITES=ON -DOGRE_BUILD_DEPENDENCIES=OFF -DOGRE_BUILD_SAMPLES=False
+make install -j8
+
+cd /home/zhfc/raisim_workspace
+git clone https://github.com/raisimTech/raisimOgre.git
+cd /home/zhfc/raisim_workspace/raisimOgre && mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/home/zhfc/raisim_build -DCMAKE_INSTALL_PREFIX=/home/zhfc/raisim_build -DRAISIM_OGRE_EXAMPLES=ON
+make install -j8
+################################################################################################################################
 import math
+import numpy as np
+import os
+import raisimpy as raisim
 import time
 
 raisim.World.setLicenseFile(os.path.dirname(os.path.abspath(__file__)) + "/../../.raisim/activation.raisim")
@@ -52,54 +95,6 @@ for i in range(500000) :
     time.sleep(world.getTimeStep())
 
 server.killServer()
-################################################################################################################################
-################################################################################################################################
-https://zhuanlan.zhihu.com/p/642040085
-
-mkdir ~/raisim_workspace
-mkdir ~/raisim_build
-
-cd ~/raisim_workspace
-git clone https://github.com/raisimTech/raisimLib.git
-cd ~/raisim_workspace/raisimLib
-mkdir build
-cd ~/raisim_workspace/raisimLib/build
-cmake .. -DCMAKE_INSTALL_PREFIX=/home/zhfc/raisim_build -DRAISIM_EXAMPLE=ON -DRAISIM_PY=ON -DPYTHON_EXECUTABLE=$(python3 -c "import sys; print(sys.executable)")
-make install -j4
-
-gedit ~/.bashrc
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/zhfc/raisim_build/lib
-export PYTHONPATH=$PYTHONPATH:/home/zhfc/raisim_build/lib
-source ~/.bashrc
-
-cd /home/zhfc
-mkdir .raisim
-/home/zhfc/.raisim/activation.raisim  #lisense
-
-cd /home/zhfc/raisim_workspace/raisimLib/raisimUnity/linux
-./raisimUnity.x86_64
-
-cd /home/zhfc/raisim_workspace/raisimLib/build/examples
-./anymals
-################################################################################################################################
-################################################################################################################################
-sudo apt-get install libgles2-mesa-dev libxt-dev libxaw7-dev libsdl2-dev libzzip-dev libfreeimage-dev libfreetype6-dev libpugixml-dev
-
-cd /home/zhfc/raisim_workspace
-git clone https://github.com/leggedrobotics/ogre.git
-cd /home/zhfc/raisim_workspace/ogre
-git checkout raisimOgre
-mkdir build
-cd /home/zhfc/raisim_workspace/ogre/build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/zhfc/raisim_build -DOGRE_BUILD_COMPONENT_BITES=ON -DOGRE_BUILD_DEPENDENCIES=OFF -DOGRE_BUILD_SAMPLES=False
-make install -j8
-
-cd /home/zhfc/raisim_workspace
-git clone https://github.com/raisimTech/raisimOgre.git
-cd /home/zhfc/raisim_workspace/raisimOgre && mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/home/zhfc/raisim_build -DCMAKE_INSTALL_PREFIX=/home/zhfc/raisim_build -DRAISIM_OGRE_EXAMPLES=ON
-make install -j8
-################################################################################################################################
 ################################################################################################################################
 conda create -n uavs
 conda activate uavs
