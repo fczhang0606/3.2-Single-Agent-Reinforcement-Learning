@@ -13,6 +13,7 @@ mkdir ~/raisim_build
 
 cd ~/raisim_workspace
 git clone https://github.com/raisimTech/raisimLib.git
+git clone --depth 1 https://github.com/raisimTech/raisimLib.git -b v1.1.01
 cd ~/raisim_workspace/raisimLib
 mkdir build
 cd ~/raisim_workspace/raisimLib/build
