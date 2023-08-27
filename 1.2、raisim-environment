@@ -5,52 +5,35 @@ https://github.com/raisimTech/raisimlib
 https://raisim.com/sections/Installation.html
 https://raisim.com/sections/RaiSimPy.html
 ################################################################################################################################
-https://zhuanlan.zhihu.com/p/642040085
 https://zhuanlan.zhihu.com/p/540603900
+https://zhuanlan.zhihu.com/p/642040085
 
 mkdir ~/raisim_workspace
 mkdir ~/raisim_build
 
 cd ~/raisim_workspace
-git clone https://github.com/raisimTech/raisimLib.git
 git clone --depth 1 https://github.com/raisimTech/raisimLib.git -b v1.1.01
+# git clone https://github.com/raisimTech/raisimLib.git
 cd ~/raisim_workspace/raisimLib
 mkdir build
 cd ~/raisim_workspace/raisimLib/build
-cmake .. -DCMAKE_INSTALL_PREFIX=/home/zhfc/raisim_build -DRAISIM_EXAMPLE=ON -DRAISIM_PY=ON -DPYTHON_EXECUTABLE=$(python3 -c "import sys; print(sys.executable)")
+cmake .. -DCMAKE_INSTALL_PREFIX=~/raisim_build -DRAISIM_EXAMPLE=ON -DRAISIM_PY=ON -DPYTHON_EXECUTABLE=$(python3 -c "import sys; print(sys.executable)")
 make install -j4
 
 gedit ~/.bashrc
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/zhfc/raisim_build/lib
-export PYTHONPATH=$PYTHONPATH:/home/zhfc/raisim_build/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/raisim_build/lib
+export PYTHONPATH=$PYTHONPATH:~/raisim_build/lib
 source ~/.bashrc
 
-cd /home/zhfc
+cd ~
 mkdir .raisim
-/home/zhfc/.raisim/activation.raisim  #lisense
+~/.raisim/activation.raisim  #lisense
 
-cd /home/zhfc/raisim_workspace/raisimLib/raisimUnity/linux
+cd ~/raisim_workspace/raisimLib/raisimUnity/linux
 ./raisimUnity.x86_64
 
-cd /home/zhfc/raisim_workspace/raisimLib/build/examples
+cd ~/raisim_workspace/raisimLib/build/examples
 ./anymals
-################################################################################################################################
-sudo apt-get install libgles2-mesa-dev libxt-dev libxaw7-dev libsdl2-dev libzzip-dev libfreeimage-dev libfreetype6-dev libpugixml-dev
-
-cd /home/zhfc/raisim_workspace
-git clone https://github.com/leggedrobotics/ogre.git
-cd /home/zhfc/raisim_workspace/ogre
-git checkout raisimOgre
-mkdir build
-cd /home/zhfc/raisim_workspace/ogre/build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/zhfc/raisim_build -DOGRE_BUILD_COMPONENT_BITES=ON -DOGRE_BUILD_DEPENDENCIES=OFF -DOGRE_BUILD_SAMPLES=False
-make install -j8
-
-cd /home/zhfc/raisim_workspace
-git clone https://github.com/raisimTech/raisimOgre.git
-cd /home/zhfc/raisim_workspace/raisimOgre && mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/home/zhfc/raisim_build -DCMAKE_INSTALL_PREFIX=/home/zhfc/raisim_build -DRAISIM_OGRE_EXAMPLES=ON
-make install -j8
 ################################################################################################################################
 import math
 import numpy as np
@@ -100,15 +83,12 @@ server.killServer()
 ################################################################################################################################
 conda create -n uavs
 conda activate uavs
-cd /home/zhfc/anaconda3/envs/uavs
+cd ~/anaconda3/envs/uavs
 
 conda install python=3.10
 conda install -c conda-forge pybind11
 
 pip install numpy
-pip install params
-pip install controller
-# pip install controller.quad_utils
 
 cd ~/raisim_workspace/test
 python test_laikago.py
