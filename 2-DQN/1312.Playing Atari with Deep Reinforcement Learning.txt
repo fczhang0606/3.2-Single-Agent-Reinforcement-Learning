@@ -12,9 +12,6 @@
 conda create -n RL_DQN
 conda activate RL_DQN
 
-cd anaconda3/envs/RL_DQN
-git clone https://github.com/boyu-ai/Hands-on-RL.git
-
 conda install python=3.8
 
 https://pytorch.org/get-started/previous-versions/
@@ -29,30 +26,3 @@ python -m ipykernel install --user --name RL_DQN
 ################################################################################################################################
 
 
-
-################################################################################################################################
-pip install gym[all]==0.25.2                https://github.com/openai
-pip install swig
-
-mujoco                                      https://mujoco.org/
-    https://www.roboti.us/index.html
-    mkdir ~/.mujoco
-    cp /mjpro150_linux.zip ~/.mujoco
-    cd ~/.mujoco
-    unzip mjpro150_linux.zip
-
-    https://www.roboti.us/license.html
-    cp /mjkey.txt ~/.mujoco
-    cp /mjkey.txt ~/.mujoco/mjpro150/bin
-
-    sudo gedit ~/.bashrc
-        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/zhfc/.mujoco/mjpro150/bin
-        export MUJOCO_KEY_PATH=$MUJOCO_KEY_PATH:~/.mujoco
-    source ~/.bashrc
-
-    cd ~/.mujoco/mjpro150/bin
-    ./simulate ../model/humanoid.xml
-
-sudo apt install libosmesa6-dev
-sudo apt install patchelf
-################################################################################################################################
