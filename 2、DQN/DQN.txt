@@ -1,0 +1,28 @@
+################################################################################################################################
+论文    https://arxiv.org/pdf/1312.5602.pdf
+
+主页    
+
+课件    
+
+视频    
+
+代码    https://github.com/boyu-ai/Hands-on-RL
+################################################################################################################################
+conda create -n RL_DQN
+conda activate RL_DQN
+
+conda install python=3.8
+
+https://pytorch.org/get-started/previous-versions/
+conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 pytorch-cuda=11.7 -c pytorch -c nvidia
+################################################################################################################################
+conda install ipykernel
+conda install platformdirs
+pip3 install ipywidgets
+pip3 install --upgrade jupyter_core jupyter_client
+
+python -m ipykernel install --user --name RL_DQN
+################################################################################################################################
+
+
