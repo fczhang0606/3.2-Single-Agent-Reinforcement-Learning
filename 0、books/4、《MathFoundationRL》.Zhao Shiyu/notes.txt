@@ -4,5 +4,5 @@
 
 用return（value）评估一个策略的好坏
 
-Bellman-Equations的矩阵形式
+Bellman-Equations的矩阵形式及其解
 
