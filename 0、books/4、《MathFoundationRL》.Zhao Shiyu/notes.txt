@@ -12,4 +12,6 @@ MDP，从终止状态反向更新价值，速度更快。
 MC中，episode最大长度（探索半径）
 （是否覆盖终点？）对估值精确度的影响。
 非增长式和增长式更新。
+MC中，epsilon关乎策略的探索性和最优性
+如果epsilon较大，会导致epsilon-greedy与最优greedy不一致
 
