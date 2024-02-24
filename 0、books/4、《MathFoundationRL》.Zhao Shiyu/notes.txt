@@ -16,8 +16,10 @@ episode最大长度（探索半径）
 （是否覆盖终点？）对估值精确度的影响。
 
 
-GD、BGD、SGD、MBGD的联系；SGD的收敛证明（RM）、性质（收敛方向）
-凸优化，《Convex Optimization》课程
+GD、BGD、SGD、MBGD的联系。
+SGD的收敛证明（RM）、性质（收敛方向、速度）。
+凸优化，《Convex Optimization》课程。
+
 
 with respect to//关于
 
