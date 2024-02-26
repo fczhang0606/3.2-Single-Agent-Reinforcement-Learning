@@ -21,5 +21,11 @@ SGD的收敛证明（RM）、性质（收敛方向、速度）。
 凸优化，《Convex Optimization》课程。
 
 
+TD时序差分：在两个时刻，对同一个量的估计的差。利用差改进估计。
+在没有模型、只有数据的情况下，进行估计：
+MC利用整条trajectory，估计V、Q；
+TD利用片段transition，估计V、Q。
+
+
 with respect to//关于
 
