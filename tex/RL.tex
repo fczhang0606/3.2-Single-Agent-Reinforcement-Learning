@@ -1,96 +1,158 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass{article}
 
-\usepackage[fleqn]{amsmath}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[fleqn]{amsmath}  % https://zhuanlan.zhihu.com/p/464170020
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{mathtools}
 
-\usepackage{geometry} % 引入geometry包
-%\geometry{a4paper, landscape} % 设置A4纸张并转为横向模式
+\usepackage{geometry}
+%\geometry{a4paper, landscape}  % 设置A4纸张并转为横向模式
+\usepackage{CJKutf8}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
-\title{Reinforcement Learning}
 
-\author{Zhang Fengchen}
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Markov Decision Process}
 
+
+\begin{CJK}{UTF8}{gbsn}
+    %\\
+    %\\
+    Concepts: \\
+    state(S)-policy(pi)-action(A)-model(p)-state(S') \\
+    reward(R') from transition \\
+    return(G)  from episode \\
+    value(V+Q) \\
+
+\end{CJK}
+
 \begin{align*}
-    p\left(s^{\prime}, r \mid s, a\right)
-    =\operatorname{Pr}\left\{S_{t}=s^{\prime}, R_{t}=r \mid S_{t-1}=s, A_{t-1}=a\right\}
+    p \left( s^{\prime}, r \mid s, a \right)
+    = \operatorname{Pr} \left\{ S_{t}=s^{\prime}, R_{t}=r \mid 
+    S_{t-1}=s, A_{t-1}=a \right\}
 \end{align*}
 
 \begin{align*}
-    \sum_{s^{\prime} \in S} \sum_{r \in R} p\left(s^{\prime}, r \mid s, a\right)
-    =1
+    \sum_{s^{\prime} \in S} \sum_{r \in R} 
+    p \left( s^{\prime}, r \mid s, a \right) = 1
 \end{align*}
 
 \begin{align*}
-    p\left(s^{\prime} \mid s, a\right)
-=\sum_{r \in R} p\left(s^{\prime}, r \mid s, a\right)
+    p \left( s^{\prime} \mid s, a \right)
+    = \sum_{r \in R} p \left( s^{\prime}, r \mid s, a \right)
 \end{align*}
 
 \begin{align*}
-    r(s, a)=\sum_{s^{\prime} \in S} \sum_{r \in R} \left(r * p\left(s^{\prime}, r \mid s, a\right)\right)
-\end{align*}
-
-\begin{align*}
-    r\left(s, a, s^{\prime}\right)=
-\frac{\sum_{r \in R} \left(r * p\left(s^{\prime}, r \mid s, a\right)\right)}
-{p\left(s^{\prime} \mid s, a\right)}
+    r(s, a) = \sum_{s^{\prime} \in S} 
+    \sum_{r \in R} 
+    \left( p \left( s^{\prime}, r \mid s, a \right) * r \right)
 \end{align*}
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
-\section{Bellmen Equations}
+\section{Bellman Equations}
+
 
 \begin{align*}
-    v_{\pi}(s) &= E_{\pi} \left[G_{t} \mid S_{t}=s\right]\\
-      &= E_{\pi} \left[R_{t+1}+\gamma G_{t+1} \mid S_{t}=s\right]\\
-      &= \sum_{a \in A} \left(\pi(a \mid s) * q_{\pi}(s, a)\right) \\
-      &= \sum_{a \in A} \pi(a \mid s) \sum_{s^{\prime}, r} p\left(s^{\prime}, r \mid s, a\right) * 
-      \left[r+\gamma E_{\pi} \left[G_{t+1} \mid S_{t+1}=s^{\prime}\right]\right] \\
-      &= \sum_{a \in A} \pi(a \mid s) \sum_{s^{\prime}, r} p\left(s^{\prime}, r \mid s, a\right) * 
-      \left[r+\gamma v_{\pi}\left(s^{\prime}\right)\right]
+    v_{\pi}(s)
+      &= E_{\pi} \left[ G_{t} \mid S_{t}=s \right] \\
+      &= E_{\pi} \left[ R_{t+1}+\gamma G_{t+1} \mid S_{t}=s \right] \\
+      &= \sum_{a \in A} \pi(a \mid s) 
+         \sum_{s^{\prime}, r} 
+         p \left( s^{\prime}, r \mid s, a \right) * 
+         \left[ r + \gamma 
+         E_{\pi} \left[ G_{t+1} \mid S_{t+1}=s^{\prime} \right] \right] \\
+      &= \sum_{a \in A} \pi(a \mid s) 
+         \sum_{s^{\prime}, r} 
+         p \left( s^{\prime}, r \mid s, a \right) * 
+         \left[ r + \gamma 
+         v_{\pi} \left( s^{\prime} \right) \right] \\
+      &= \sum_{a \in A} 
+         \left( \pi(a \mid s) * q_{\pi}(s, a) \right)
 \end{align*}
+
 
 \begin{align*}
-q(s, a):
-q_{\pi}(s, a)&=E_{\pi} \left[G_{t} \mid S_{t}=s, A_{t}=a\right] \\
-&=E_{\pi} \left[R_{t+1}+\gamma G_{t+1} \mid S_{t}=s, A_{t}=a\right] \\
-&=\sum_{s^{\prime}, r} p\left(s^{\prime}, r \mid s, a\right) * 
-\left[r+\gamma E_{\pi} \left[G_{t+1} \mid S_{t+1}=s^{\prime}\right]\right] \\
-&=\sum_{s^{\prime}, r} p\left(s^{\prime}, r \mid s, a\right) * 
-\left[r+\gamma v_{\pi}\left(s^{\prime}\right)\right] \\
-&=\sum_{s^{\prime}, r} p\left(s^{\prime}, r \mid s, a\right) * 
-\left[r+\gamma \sum_{a^{\prime} \in A} \left(\pi\left(a^{\prime} \mid s^{\prime}\right) * 
-q_{\pi}\left(s^{\prime}, a^{\prime}\right)\right)\right] \\
+    q_{\pi}(s, a)
+      &= E_{\pi} \left[ G_{t} \mid S_{t}=s, A_{t}=a \right] \\
+      &= E_{\pi} \left[ R_{t+1}+\gamma G_{t+1} 
+         \mid S_{t}=s, A_{t}=a \right] \\
+      &= \sum_{s^{\prime}, r} 
+         p \left( s^{\prime}, r \mid s, a \right) * 
+         \left[ r + \gamma 
+         E_{\pi} \left[ G_{t+1} \mid S_{t+1}=s^{\prime} \right] \right] \\
+      &= \sum_{s^{\prime}, r} 
+         p \left( s^{\prime}, r \mid s, a \right) * 
+         \left[ r + \gamma 
+         v_{\pi} \left( s^{\prime} \right) \right] \\
+      &= \sum_{s^{\prime}, r} 
+         p \left( s^{\prime}, r \mid s, a \right) * 
+         \left[ r + \gamma 
+         \sum_{a^{\prime} \in A} 
+         \left( \pi \left( a^{\prime} \mid s^{\prime} \right) * 
+         q_{\pi} \left( s^{\prime}, a^{\prime} \right) \right) \right] \\
 \end{align*}
 
-$$v_{*}(s)=\max_{a \in A} q_{\pi *}(s, a) \quad \forall s \in S$$
+
+policy-comparison: \
+\begin{align*}
+    \pi^{\prime} \geq \pi 
+    \quad \leftarrow \rightarrow \quad 
+    v_{\pi^{\prime}}(s) \geq v_{\pi}(s) 
+    \quad \forall s \in S
+\end{align*}
+\\
+
+policy-improvement: \
+\begin{align*}
+    E_{\pi^{\prime}} 
+    \left[ q_{\pi} \left( s, \pi^{\prime}(s) \right) \right] 
+    \geq v_{\pi}(s) 
+    = E_{\pi} \left[ q_{\pi} \left( s, \pi(s) \right) \right] 
+    \quad \forall s \in S
+\end{align*}
+\\
+
+optimal-policy: \
+\begin{align*}
+    v_{*}(s) = \max_{\pi} v_{\pi}(s)
+    = \max_{a \in A} q_{\pi *}(s, a) 
+    \quad \forall s \in S
+\end{align*}
+\\
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
-Dynamic Programming
+\section{Dynamic Programming (model p)}
 
-Policy Improvement Theorem:
-$$E_{\pi^{\prime}} \left[q_{\pi}\left(s, \pi^{\prime}(s)\right)\right] \geq v_{\pi}(s) \quad \forall s \in S$$
-$$\pi^{\prime} \geq \pi \quad \leftarrow \rightarrow \quad v_{\pi^{\prime}}(s) \geq v_{\pi}(s) \quad \forall s \in S$$
 
-Policy Evaluation:
-$$v_{k+1}(s)={E}_{\pi} \left[R_{t+1}+\gamma v_{k}\left(S_{t+1}\right) \mid S_{t}=s\right]$$
-$$=\sum_{a} \pi(a \mid s) \sum_{s^{\prime}, r} 
-p\left(s^{\prime}, r \mid s, a\right)\left[r+\gamma v_{k}\left(s^{\prime}\right)\right]$$
+Policy Evaluation: (matrix solution vs. iteration solution) \
+\begin{align*}
+    v_{k+1}(s) 
+    &= {E}_{\pi} \left[ R_{t+1}+\gamma 
+    v_{k} \left( S_{t+1} \right) \mid S_{t}=s \right] \\
+    &= \sum_{a} \pi(a \mid s) \sum_{s^{\prime}, r} 
+    p \left( s^{\prime}, r \mid s, a \right) 
+    \left[ r+\gamma v_{k} \left( s^{\prime} \right) \right]
+\end{align*}
+\\
+
 
 Policy Improvement:
 $$\pi^{\prime}(s)=\underset{a}{\arg \max} q_{\pi}(s, a)$$
 
 Value Iteration:
 $$v_{k+1}(s)=\max_{a} \mathbb{E} \left[R_{t+1}+\gamma v_{k}\left(S_{t+1}\right) \mid S_{t}=s, A_{t}=a\right]$$
+
+\section{Monte Carlo}
 
 
 \end{document}
