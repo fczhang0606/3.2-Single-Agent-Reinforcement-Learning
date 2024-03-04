@@ -21,16 +21,14 @@
 \section{Markov Decision Process}
 
 
+~ \\[6pt]
 \begin{CJK}{UTF8}{gbsn}
-    %\\
-    %\\
-    Concepts: \\
-    state(S)-policy(pi)-action(A)-model(p)-state(S') \\
-    reward(R') from transition \\
-    return(G)  from episode \\
-    value(V+Q) \\
-
+    state(S)-policy(pi)-action(A)-model(p)-state(S') \\[6pt]
+    reward(R') from transition \\[6pt]
+    return(G)  from episode \\[6pt]
+    value(V+Q) \\[6pt]
 \end{CJK}
+
 
 \begin{align*}
     p \left( s^{\prime}, r \mid s, a \right)
@@ -38,15 +36,18 @@
     S_{t-1}=s, A_{t-1}=a \right\}
 \end{align*}
 
+
 \begin{align*}
     \sum_{s^{\prime} \in S} \sum_{r \in R} 
     p \left( s^{\prime}, r \mid s, a \right) = 1
 \end{align*}
 
+
 \begin{align*}
     p \left( s^{\prime} \mid s, a \right)
     = \sum_{r \in R} p \left( s^{\prime}, r \mid s, a \right)
 \end{align*}
+
 
 \begin{align*}
     r(s, a) = \sum_{s^{\prime} \in S} 
@@ -58,6 +59,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 \section{Bellman Equations}
+
+
+~ \\[6pt]
+\begin{CJK}{UTF8}{gbsn}
+    描述状态之间的静态关系 \\[6pt]
+\end{CJK}
 
 
 \begin{align*}
@@ -101,16 +108,17 @@
 \end{align*}
 
 
-policy-comparison: \
+policy-comparison: 
 \begin{align*}
     \pi^{\prime} \geq \pi 
     \quad \leftarrow \rightarrow \quad 
     v_{\pi^{\prime}}(s) \geq v_{\pi}(s) 
     \quad \forall s \in S
 \end{align*}
-\\
+\\[6pt]
 
-policy-improvement: \
+
+policy-improvement: 
 \begin{align*}
     E_{\pi^{\prime}} 
     \left[ q_{\pi} \left( s, \pi^{\prime}(s) \right) \right] 
@@ -118,23 +126,30 @@ policy-improvement: \
     = E_{\pi} \left[ q_{\pi} \left( s, \pi(s) \right) \right] 
     \quad \forall s \in S
 \end{align*}
-\\
+\\[6pt]
 
-optimal-policy: \
+
+optimal-policy: 
 \begin{align*}
     v_{*}(s) = \max_{\pi} v_{\pi}(s)
     = \max_{a \in A} q_{\pi *}(s, a) 
     \quad \forall s \in S
 \end{align*}
-\\
+\\[6pt]
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
-\section{Dynamic Programming (model p)}
+\section{Dynamic Programming}
 
 
-Policy Evaluation: (matrix solution vs. iteration solution) \
+~ \\[6pt]
+\begin{CJK}{UTF8}{gbsn}
+    基于模型 p 的策略 pi 迭代（策略估计、策略改进） \\[6pt]
+\end{CJK}
+
+
+Policy Evaluation: (matrix solution vs. iteration solution)
 \begin{align*}
     v_{k+1}(s) 
     &= {E}_{\pi} \left[ R_{t+1}+\gamma 
@@ -143,14 +158,22 @@ Policy Evaluation: (matrix solution vs. iteration solution) \
     p \left( s^{\prime}, r \mid s, a \right) 
     \left[ r+\gamma v_{k} \left( s^{\prime} \right) \right]
 \end{align*}
+\\[6pt]
+
+
+Policy Improvement: (greedy)
+\begin{align*}
+    \pi^{\prime}(s) = \underset{a}{\arg \max} q_{\pi}(s, a)
+\end{align*}
+\\[6pt]
+
+
+Value Iteration: \
+\begin{align*}
+    v_{k+1}(s)=\max_{a} \mathbb{E} \left[R_{t+1}+\gamma v_{k}\left(S_{t+1}\right) \mid S_{t}=s, A_{t}=a\right]
+\end{align*}
 \\
 
-
-Policy Improvement:
-$$\pi^{\prime}(s)=\underset{a}{\arg \max} q_{\pi}(s, a)$$
-
-Value Iteration:
-$$v_{k+1}(s)=\max_{a} \mathbb{E} \left[R_{t+1}+\gamma v_{k}\left(S_{t+1}\right) \mid S_{t}=s, A_{t}=a\right]$$
 
 \section{Monte Carlo}
 
