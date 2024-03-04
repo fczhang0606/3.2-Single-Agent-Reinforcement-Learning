@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.2.28)  4 MAR 2024 12:35
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.2.28)  4 MAR 2024 14:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -460,25 +460,34 @@ Underfull \hbox (badness 10000) in paragraph at lines 167--169
 
  []
 
+(/usr/local/texlive/2023/texmf-dist/tex/latex/cjk/texinput/UTF8/UTF8.enc
+File: UTF8.enc 2021/10/16 4.8.5
+) (/usr/local/texlive/2023/texmf-dist/tex/latex/cjk/texinput/UTF8/UTF8.chr
+File: UTF8.chr 2021/10/16 4.8.5
+)
+Underfull \hbox (badness 10000) in paragraph at lines 171--175
 
-Underfull \hbox (badness 10000) in paragraph at lines 174--176
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 180--182
 
  []
 
 [3] (./RL.aux) ) 
 Here is how much of TeX's memory you used:
- 5366 strings out of 476025
- 78663 string characters out of 5790023
+ 5380 strings out of 476025
+ 79079 string characters out of 5790023
  1863388 words of memory out of 5000000
- 25687 multiletter control sequences out of 15000+600000
- 519943 words of font info for 61 fonts, out of 8000000 for 9000
+ 25695 multiletter control sequences out of 15000+600000
+ 520225 words of font info for 62 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  65i,11n,71p,215b,708s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu30.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu4e.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu4f.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu51.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu57.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu60.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu63.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu65.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu6a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu72.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu75.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu76.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu7b.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu7c.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu8b.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu8f.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu95.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu97.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnuff.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on RL.pdf (3 pages, 169739 bytes).
+</usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu30.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu4e.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu4f.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu50.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu51.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu57.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu60.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu63.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu65.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu6a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu72.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu75.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu76.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu7b.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu7c.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu8b.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu8f.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu95.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnu97.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/arphic/gbsnu/gbsnuff.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on RL.pdf (3 pages, 173660 bytes).
 PDF statistics:
- 178 PDF objects out of 1000 (max. 8388607)
- 95 compressed objects within 1 object stream
+ 184 PDF objects out of 1000 (max. 8388607)
+ 98 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 77 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 81 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -145,7 +145,7 @@ optimal-policy:
 
 ~ \\[6pt]
 \begin{CJK}{UTF8}{gbsn}
-    基于模型 p 的策略 pi 迭代（策略估计、策略改进） \\[6pt]
+    (1) 基于模型 p 的策略 pi 迭代（策略估计、策略改进）： \\[6pt]
 \end{CJK}
 
 
@@ -163,16 +163,24 @@ Policy Evaluation: (matrix solution vs. iteration solution)
 
 Policy Improvement: (greedy)
 \begin{align*}
-    \pi^{\prime}(s) = \underset{a}{\arg \max} q_{\pi}(s, a)
+    \pi^{\prime}(s) = \underset{a}{\arg \max} \ q_{\pi}(s, a)
 \end{align*}
 \\[6pt]
 
 
-Value Iteration: \
+~ \\[6pt]
+\begin{CJK}{UTF8}{gbsn}
+    (2) 基于模型 p 的价值 v 迭代： \\[6pt]
+\end{CJK}
+
+
+Value Evaluation + Policy Improvement: 
 \begin{align*}
-    v_{k+1}(s)=\max_{a} \mathbb{E} \left[R_{t+1}+\gamma v_{k}\left(S_{t+1}\right) \mid S_{t}=s, A_{t}=a\right]
+    v_{k+1}(s) = \max_{a} 
+    \mathbb{E} \left[ R_{t+1}+\gamma 
+    v_{k} \left( S_{t+1} \right) \mid S_{t}=s, A_{t}=a \right]
 \end{align*}
-\\
+\\[6pt]
 
 
 \section{Monte Carlo}
