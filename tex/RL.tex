@@ -1,8 +1,8 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%文档类型
 \documentclass{article}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%引入宏包
 \usepackage[fleqn]{amsmath}  % https://zhuanlan.zhihu.com/p/464170020
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -13,42 +13,56 @@
 \usepackage{CJKutf8}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%正文内容
 \begin{document}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Markov Decision Process}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%第一章
+\section*{ch1: Markov Decision Process}
 
 
-~ \\[6pt]
+~ \\[3pt]  % 总结
 \begin{CJK}{UTF8}{gbsn}
-    state(S)-policy(pi)-action(A)-model(p)-state(S') \\[6pt]
-    reward(R') from transition \\[6pt]
-    return(G)  from episode \\[6pt]
-    value(V+Q) \\[6pt]
+    % 概念
+    state(S) - policy(pi) - action(A) - model(p) - state(S') \\[3pt]
+    reward(R') from transition \\[3pt]
+    return(G) from trajectory \\[3pt]
+    value(V+Q) \\[3pt]
+
+    ~ \\[3pt]
+    % 理解
+    策略与价值：\\[3pt]
+    reward、return、value，用来评估一个策略的好坏。 \\[3pt]
+    策略与价值一一对应。 \\[3pt]
+    策略比较，策略改进定理。 \\[3pt]
+    强化学习的终极目标，求取最优策略， \\[3pt]
+    最优策略不唯一，最优价值唯一。 \\[3pt]
+    最优动作价值，意味着选取这个动作，未来回报的期望最大。 \\[3pt]
+    迭代时，最优策略可能已经稳定了，但是对应的最优价值还没稳定。 \\[3pt]
+    从终止状态反向更新价值，速度更快。但是哪里是终止状态？上帝视角。 \\[3pt]
 \end{CJK}
 
 
+% 模型p
 \begin{align*}
     p \left( s^{\prime}, r \mid s, a \right)
     = \operatorname{Pr} \left\{ S_{t}=s^{\prime}, R_{t}=r \mid 
     S_{t-1}=s, A_{t-1}=a \right\}
 \end{align*}
 
-
+% 模型p=1
 \begin{align*}
     \sum_{s^{\prime} \in S} \sum_{r \in R} 
     p \left( s^{\prime}, r \mid s, a \right) = 1
 \end{align*}
 
-
+% 模型p-s'
 \begin{align*}
     p \left( s^{\prime} \mid s, a \right)
     = \sum_{r \in R} p \left( s^{\prime}, r \mid s, a \right)
 \end{align*}
 
-
+% 奖励r
 \begin{align*}
     r(s, a) = \sum_{s^{\prime} \in S} 
     \sum_{r \in R} 
@@ -56,56 +70,63 @@
 \end{align*}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%第二章
 \newpage
-\section{Bellman Equations}
+\section*{ch2: Bellman Equations}
 
 
-~ \\[6pt]
+~ \\[3pt]
+% 解释
 \begin{CJK}{UTF8}{gbsn}
-    描述状态之间的静态关系 \\[6pt]
+    实质：描述状态值之间的静态关系（单项形式、矩阵形式） \\[3pt]
+    求解：（矩阵求逆、数值迭代）---（policy-evaluation）\\[3pt]
 \end{CJK}
 
 
+% v
 \begin{align*}
     v_{\pi}(s)
-      &= E_{\pi} \left[ G_{t} \mid S_{t}=s \right] \\
-      &= E_{\pi} \left[ R_{t+1}+\gamma G_{t+1} \mid S_{t}=s \right] \\
+      &= E_{\pi} \left[ G_{t} \mid S_{t}=s \right] \\[3pt]
+      &= E_{\pi} \left[ R_{t+1}+\gamma G_{t+1} \mid S_{t}=s \right] \\[3pt]
+      &= \sum_{a \in A} \pi(a \mid s) 
+         \sum_{s^{\prime}, r} 
+         p \left( s^{\prime}, r \mid s, a \right) * 
+         \left[ r + \gamma E_{\pi} 
+         \left[ G_{t+1} \mid S_{t+1}=s^{\prime} \right] \right] \\[3pt]
       &= \sum_{a \in A} \pi(a \mid s) 
          \sum_{s^{\prime}, r} 
          p \left( s^{\prime}, r \mid s, a \right) * 
          \left[ r + \gamma 
-         E_{\pi} \left[ G_{t+1} \mid S_{t+1}=s^{\prime} \right] \right] \\
-      &= \sum_{a \in A} \pi(a \mid s) 
-         \sum_{s^{\prime}, r} 
-         p \left( s^{\prime}, r \mid s, a \right) * 
-         \left[ r + \gamma 
-         v_{\pi} \left( s^{\prime} \right) \right] \\
+         v_{\pi} \left( s^{\prime} \right) \right] \\[3pt]
       &= \sum_{a \in A} 
-         \left( \pi(a \mid s) * q_{\pi}(s, a) \right)
+         \left( \pi(a \mid s) * q_{\pi}(s, a) \right) \\[3pt]
 \end{align*}
 
-
+% q
 \begin{align*}
     q_{\pi}(s, a)
-      &= E_{\pi} \left[ G_{t} \mid S_{t}=s, A_{t}=a \right] \\
+      &= E_{\pi} \left[ G_{t} \mid S_{t}=s, A_{t}=a \right] \\[3pt]
       &= E_{\pi} \left[ R_{t+1}+\gamma G_{t+1} 
-         \mid S_{t}=s, A_{t}=a \right] \\
+         \mid S_{t}=s, A_{t}=a \right] \\[3pt]
+      &= \sum_{s^{\prime}, r} 
+         p \left( s^{\prime}, r \mid s, a \right) * 
+         \left[ r + \gamma E_{\pi} 
+         \left[ G_{t+1} \mid S_{t+1}=s^{\prime} \right] \right] \\[3pt]
       &= \sum_{s^{\prime}, r} 
          p \left( s^{\prime}, r \mid s, a \right) * 
          \left[ r + \gamma 
-         E_{\pi} \left[ G_{t+1} \mid S_{t+1}=s^{\prime} \right] \right] \\
-      &= \sum_{s^{\prime}, r} 
-         p \left( s^{\prime}, r \mid s, a \right) * 
-         \left[ r + \gamma 
-         v_{\pi} \left( s^{\prime} \right) \right] \\
+         v_{\pi} \left( s^{\prime} \right) \right] \\[3pt]
       &= \sum_{s^{\prime}, r} 
          p \left( s^{\prime}, r \mid s, a \right) * 
          \left[ r + \gamma 
          \sum_{a^{\prime} \in A} 
          \left( \pi \left( a^{\prime} \mid s^{\prime} \right) * 
-         q_{\pi} \left( s^{\prime}, a^{\prime} \right) \right) \right] \\
+         q_{\pi} \left( s^{\prime}, a^{\prime} \right) 
+         \right) \right] \\[3pt]
 \end{align*}
+
+
+\newpage
 
 
 policy-comparison: 
@@ -115,7 +136,7 @@ policy-comparison:
     v_{\pi^{\prime}}(s) \geq v_{\pi}(s) 
     \quad \forall s \in S
 \end{align*}
-\\[6pt]
+\\[3pt]
 
 
 policy-improvement: 
@@ -126,26 +147,35 @@ policy-improvement:
     = E_{\pi} \left[ q_{\pi} \left( s, \pi(s) \right) \right] 
     \quad \forall s \in S
 \end{align*}
-\\[6pt]
+\\[3pt]
 
 
-optimal-policy: 
+Bellman Optimal Equations: 
 \begin{align*}
-    v_{*}(s) = \max_{\pi} v_{\pi}(s)
-    = \max_{a \in A} q_{\pi *}(s, a) 
-    \quad \forall s \in S
+    v_{*}(s) 
+    & = \max_{\pi} v_{\pi}(s) \\[3pt]
+    & = \max_{\pi} \left( r_{\pi} + \gamma P_{\pi} v \right) \\[3pt]
+    & = \max_{a \in A} q_{\pi *}(s, a) \quad \forall s \in S \\[3pt]
 \end{align*}
-\\[6pt]
+\\[3pt]
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
-\section{Dynamic Programming}
-
-
-~ \\[6pt]
+~ \\[3pt]
+% 收缩映射定理
 \begin{CJK}{UTF8}{gbsn}
-    (1) 基于模型 p 的策略 pi 迭代（策略估计、策略改进）： \\[6pt]
+    Contraction Mapping Theorem (迭代收敛至唯一不动点) \\[3pt]
+\end{CJK}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%第三章
+\newpage
+\section*{ch3: Dynamic Programming}
+
+
+~ \\[3pt]
+% 理解
+\begin{CJK}{UTF8}{gbsn}
+    (1) 基于模型 p 的策略 pi 迭代（策略估计、策略改进）： \\[3pt]
 \end{CJK}
 
 
@@ -158,19 +188,20 @@ Policy Evaluation: (matrix solution vs. iteration solution)
     p \left( s^{\prime}, r \mid s, a \right) 
     \left[ r+\gamma v_{k} \left( s^{\prime} \right) \right]
 \end{align*}
-\\[6pt]
+\\[3pt]
 
 
 Policy Improvement: (greedy)
 \begin{align*}
     \pi^{\prime}(s) = \underset{a}{\arg \max} \ q_{\pi}(s, a)
 \end{align*}
-\\[6pt]
+\\[3pt]
 
 
-~ \\[6pt]
+~ \\[3pt]
+% 理解
 \begin{CJK}{UTF8}{gbsn}
-    (2) 基于模型 p 的价值 v 迭代： \\[6pt]
+    (2) 基于模型 p 的价值 v 迭代： \\[3pt]
 \end{CJK}
 
 
@@ -180,10 +211,25 @@ Value Evaluation + Policy Improvement:
     \mathbb{E} \left[ R_{t+1}+\gamma 
     v_{k} \left( S_{t+1} \right) \mid S_{t}=s, A_{t}=a \right]
 \end{align*}
-\\[6pt]
+\\[3pt]
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Monte Carlo}
+
+
+~ \\[3pt]
+\begin{CJK}{UTF8}{gbsn}
+    (1) 基于数据 trajectory 的价值估计、策略改进： \\[3pt]
+\end{CJK}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Temporal Difference}
+
+
+~ \\[3pt]
+\begin{CJK}{UTF8}{gbsn}
+    (1) 基于数据 transition 的价值估计、策略改进： \\[3pt]
+\end{CJK}
 
 
 \end{document}
