@@ -32,15 +32,15 @@
     ~ \\[3pt]
     % 理解
     策略与价值：\\[3pt]
-    reward、return、value，用来评估一个策略的好坏。 \\[3pt]
+    ①reward、return、value，用来评估一个策略的好坏。 \\[3pt]
     策略与价值一一对应。 \\[3pt]
-    价值比较，策略比较，策略改进定理。 \\[3pt]
-    强化学习的终极目标，求取最优策略， \\[3pt]
+    ②价值比较，策略比较，策略改进定理。 \\[3pt]
+    ③强化学习的终极目标，求取最优策略， \\[3pt]
     最优策略不唯一，最优价值唯一。 \\[3pt]
-    r线性变换，V+Q线性变换，改变最优价值，不改变greedy最优策略。 \\[3pt]
     最优动作价值，意味着选取这个动作，未来回报的期望最大。 \\[3pt]
-    迭代时，最优策略可能已经稳定了，但是对应的最优价值还没稳定。 \\[3pt]
-    从终止状态反向迭代更新价值，速度更快。但是哪里是终止状态？上帝视角。 \\[3pt]
+    ④r线性变换，V+Q线性变换，改变最优价值，不改变greedy最优策略。 \\[3pt]
+    ⑤迭代时，最优策略可能已经稳定了，但是对应的最优价值还没稳定。 \\[3pt]
+    ⑥从终止状态反向迭代更新价值，速度更快。但是哪里是终止状态？上帝视角。 \\[3pt]
 \end{CJK}
 
 
@@ -201,7 +201,7 @@ Value Update:
 ~ \\[3pt]
 Policy Evaluation: (matrix solution vs. iteration solution)
 \begin{align*}
-    v_{\pi_{k}} = r_{\pi_{k}} + \gamma P_{\pi_{k}} v_{\pi_{k}}
+    v_{\pi_{k}} = r_{\pi_{k}} + \gamma P_{\pi_{k}} v_{\pi_{k}} 
 \end{align*}
 
 ~ \\[3pt]
@@ -215,21 +215,77 @@ Policy Improvement:
 ~ \\[3pt]
 ~ \\[3pt]
 (3) Turncated Iteration: 
+~ \\[3pt]
+
+~ \\[3pt]
+\begin{CJK}{UTF8}{gbsn}
+    值迭代有限次数，介于1次与无穷次之间；值也未稳定，就进行策略改进 \\[3pt]
+\end{CJK}
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%第四章
 \newpage
-\section{Monte Carlo}
+\section*{ch4: Monte Carlo (model-free, dynamics with trajectory)}
+
+
+~ \\[3pt]
+Sample: 
+\begin{align*}
+    v_{\pi}(s) 
+      &= E_{\pi} \left[ G_{t} \mid S_{t}=s \right] \\[3pt]
+    q_{\pi}(s, a) 
+      &= E_{\pi} \left[ G_{t} \mid S_{t}=s, A_{t}=a \right] \\[3pt]
+\end{align*}
 
 
 ~ \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
-    (1) 基于数据 trajectory 的价值估计、策略改进： \\[3pt]
+    理解： \\[3pt]
+    ①采样进行估计，基于概率论的大数定理。 \\[3pt]
+    ②episode长度（探索半径是否覆盖终点？）对估值影响，最优价值是否反向传播。 \\[3pt]
+    ③估计的更新方式，非增长式（等着一起算）和增长式（来一个算一个）。 \\[3pt]
+    ④epsilon关乎采样策略的探索性和最优性， \\[3pt]
+    大则探索性强、最优性弱，小则探索性弱、最优性强， \\[3pt]
+    ⑤如果epsilon大到一定程度，可能会导致epsilon-greedy与最优greedy不一致。 \\[3pt]
 \end{CJK}
 
+
+~ \\[3pt]
+(1) MC-Basic
+~ \\[3pt]
+\begin{CJK}{UTF8}{gbsn}
+    二次循环，遍历所有(s, a)；某个策略下，每对采足够样，非增长式估计相应Q。 \\[3pt]
+    策略相应的，一套稳定Q值下，策略改进。 \\[3pt]
+    迭代。 \\[3pt]
+\end{CJK}
+
+
+~ \\[3pt]
+(2) MC-Exploring-Starts
+~ \\[3pt]
+\begin{CJK}{UTF8}{gbsn}
+    起始分布覆盖(s, a)全集。 \\[3pt]
+    Pi下，充分利用每一个trajectory里的所有(s, a)对，访问，即增长式估计相应Q。 \\[3pt]
+    每一个trajectory结束后，Q值未必稳定，都进行策略改进。 \\[3pt]
+    迭代。 \\[3pt]
+\end{CJK}
+
+
+~ \\[3pt]
+(3) MC-epsilon-greedy
+~ \\[3pt]
+\begin{CJK}{UTF8}{gbsn}
+    过程分布覆盖(s, a)全集。 \\[3pt]
+    e-Pi下，充分利用每一个trajectory里的所有(s, a)对，
+    访问，即增长式估计相应Q。 \\[3pt]
+    每一个trajectory结束后，Q值未必稳定，都进行策略改进，生成e-Pi。 \\[3pt]
+    迭代。 \\[3pt]
+\end{CJK}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Temporal Difference}
+\newpage
+\section*{ch5: Temporal Difference}
 
 
 ~ \\[3pt]
