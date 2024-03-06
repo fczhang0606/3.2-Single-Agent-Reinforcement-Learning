@@ -285,6 +285,70 @@ Sample:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
+\section*{*stochastic approximation}
+
+
+~ \\[3pt]
+(1) Incremental-Estimation: 
+\begin{align*}
+    w_{k}   &= \frac {1} {k} \sum_{i=1}^{k} x_{i} 
+            \qquad \qquad \qquad \qquad 
+    w_{k-1}  = \frac {1} {k-1} \sum_{i=1}^{k-1} x_{i} \\[3pt]
+    w_{k}   &= \frac {1} {k} \left[ (k-1)w_{k-1} + x_{k} \right] 
+            \quad = w_{k-1} + \frac {1} {k} 
+            \left[ x_{k} - w_{k-1} \right] 
+\end{align*}
+
+
+~ \\[3pt]
+(2) Robbins-Monro: 
+\begin{align*}
+    g(w) 
+    & = 0 \qquad (\text{g is unknown, w is input, 0 is output}) \\[3pt]
+    & g(w) = \nabla_{w} L(w) = 0 \quad (\text{w is parametres}) \\[3pt]
+    & g(w) = L(w) - C = 0 \\[3pt]
+    & \qquad \text{w* is the solution (Convergence Condition)}
+\end{align*}
+\begin{align*}
+    w_{k+1} &= w_{k} + a_{k} \left[ 
+            \tilde{g} \left( w_{k}, \eta_{k} \right) - 0 \right] \\[3pt]
+            &= w_{k} + a_{k} 
+            \left( g(w_{k}) + \eta_{k} \right) \\[3pt]
+            & iteration: \ \{w_{k}\} + \{\tilde{g}_{k}\} + \{a_{k}\} 
+\end{align*}
+
+
+~ \\[3pt]
+(3) Optimazation: 
+\begin{align*}
+    & \min_{w} J(w) = E \left[ f(w, X) \right] \\[3pt]
+    & \qquad \Rightarrow \Rightarrow \qquad 
+    \nabla_{w} E \left[ f(w, X) \right] = 0 \\[3pt]
+    & \qquad \Rightarrow \Rightarrow \qquad 
+    Gradient: \quad InputSpace, \quad direction + magnitude 
+\end{align*}
+
+
+~ \\[3pt]
+GD \quad + \quad (Mini)Batch GD \quad + \quad Stochastic GD: 
+\begin{align*}
+    w_{k+1} & 
+            \quad = \quad w_{k} - \alpha_{k} 
+            \nabla_{w} E \left[ f(w_{k}, X) \right] 
+            \quad = \quad w_{k} - \alpha_{k} 
+            E \left[ \nabla_{w} f(w_{k}, X) \right] \\[3pt]
+    w_{k+1} & 
+            \quad = \quad w_{k} - \alpha_{k} 
+            \frac {1} {n} \sum_{i=1}^{n} 
+            \nabla_{w} f(w_{k}, x_{i}) \\[3pt]
+    w_{k+1} & 
+            \quad = \quad w_{k} - \alpha_{k} 
+            \nabla_{w} f(w_{k}, x_{k}) \\[3pt]
+\end{align*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \section*{ch5: Temporal Difference}
 
 
