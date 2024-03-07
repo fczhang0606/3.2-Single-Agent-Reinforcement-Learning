@@ -17,20 +17,19 @@
 \begin{document}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%第一章
-\section*{ch1: Markov Decision Process (static concepts)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{ch1: Markov Decision Process}
 
 
-~ \\[3pt]  % 总结
+~ \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
-    % 概念
+    Static Concepts: \\[3pt]
     state(S) - policy(pi) - action(A) - model(p) - state(S') \\[3pt]
     reward(R') from transition \\[3pt]
     return(G) from trajectory \\[3pt]
     value(V+Q) \\[3pt]
 
     ~ \\[3pt]
-    % 理解
     策略与价值：\\[3pt]
     ①reward、return、value，用来评估一个策略的好坏。 \\[3pt]
     策略与价值一一对应。 \\[3pt]
@@ -71,14 +70,14 @@
 \end{align*}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%第二章
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
-\section*{ch2: Bellman Equations (static relations)}
+\section*{ch2: Bellman Equations}
 
 
 ~ \\[3pt]
-% 解释
 \begin{CJK}{UTF8}{gbsn}
+    Static Relationship \\[3pt]
     实质：描述状态值之间的静态关系（单项形式、矩阵形式） \\[3pt]
     求解：（矩阵求逆、数值迭代）---（policy-evaluation） \\[3pt]
 \end{CJK}
@@ -87,8 +86,13 @@
 % v
 \begin{align*}
     v_{\pi}(s) 
-      &= E_{\pi} \left[ G_{t} \mid S_{t}=s \right] \\[3pt]
-      &= E_{\pi} \left[ R_{t+1}+\gamma G_{t+1} \mid S_{t}=s \right] \\[3pt]
+      &= E_{\pi} \left[ G_{t} \mid S_{t}=s \right] 
+         \qquad \qquad \qquad \qquad \qquad \qquad (Definition) \\[3pt]
+      &= E_{\pi} \left[ R_{t+1} + \gamma G_{t+1} \mid S_{t}=s \right] 
+         \qquad \qquad \qquad \qquad (TD-0) \\[3pt]
+      &= E_{\pi} \left[ R_{t+1} + R_{t+2} + R_{t+3} + ... 
+         \mid S_{t}=s \right] 
+         \qquad (TD-n)(TD-\Join =MC) \\[3pt]
       &= \sum_{a \in A} \pi(a \mid s) 
          \sum_{s^{\prime}, r} 
          p \left( s^{\prime}, r \mid s, a \right) * 
@@ -98,17 +102,23 @@
          \sum_{s^{\prime}, r} 
          p \left( s^{\prime}, r \mid s, a \right) * 
          \left[ r + \gamma 
-         v_{\pi} \left( s^{\prime} \right) \right] \\[3pt]
+         v_{\pi} \left( s^{\prime} \right) \right] 
+         \qquad (BEs) \\[3pt]
       &= \sum_{a \in A} 
-         \left( \pi(a \mid s) * q_{\pi}(s, a) \right) \\[3pt]
+         \pi(a \mid s) * q_{\pi}(s, a) \\[3pt]
 \end{align*}
 
 % q
 \begin{align*}
     q_{\pi}(s, a) 
-      &= E_{\pi} \left[ G_{t} \mid S_{t}=s, A_{t}=a \right] \\[3pt]
-      &= E_{\pi} \left[ R_{t+1}+\gamma G_{t+1} 
-         \mid S_{t}=s, A_{t}=a \right] \\[3pt]
+      &= E_{\pi} \left[ G_{t} \mid S_{t}=s, A_{t}=a \right] 
+      \qquad \qquad \qquad \qquad \qquad \qquad (Definition) \\[3pt]
+      &= E_{\pi} \left[ R_{t+1} + \gamma G_{t+1} 
+         \mid S_{t}=s, A_{t}=a \right] 
+         \qquad \qquad \qquad \qquad (TD-0) \\[3pt]
+      &= E_{\pi} \left[ R_{t+1} + R_{t+2} + R_{t+3} + ... 
+         \mid S_{t}=s, A_{t}=a \right] 
+         \qquad (TD-n)(TD-\Join =MC) \\[3pt]
       &= \sum_{s^{\prime}, r} 
          p \left( s^{\prime}, r \mid s, a \right) * 
          \left[ r + \gamma E_{\pi} 
@@ -121,9 +131,9 @@
          p \left( s^{\prime}, r \mid s, a \right) * 
          \left[ r + \gamma 
          \sum_{a^{\prime} \in A} 
-         \left( \pi \left( a^{\prime} \mid s^{\prime} \right) * 
-         q_{\pi} \left( s^{\prime}, a^{\prime} \right) 
-         \right) \right] \\[3pt]
+         \pi ! \left( a^{\prime} \mid s^{\prime} \right) * 
+         q_{\pi} \left( s^{\prime}, a^{\prime} \right) \right] 
+         \quad (BEs) \\[3pt]
 \end{align*}
 
 
@@ -135,7 +145,7 @@ policy-comparison:
     \pi^{\prime} \geq \pi 
     \quad \leftarrow \rightarrow \quad 
     v_{\pi^{\prime}}(s) \geq v_{\pi}(s) 
-    \quad \forall s \in S 
+    \qquad \forall s \in S 
 \end{align*}
 \\[3pt]
 
@@ -146,7 +156,7 @@ policy-improvement:
     \left[ q_{\pi} \left( s, \pi^{\prime}(s) \right) \right] 
     \geq v_{\pi}(s) 
     = E_{\pi} \left[ q_{\pi} \left( s, \pi(s) \right) \right] 
-    \quad \forall s \in S 
+    \qquad \forall s \in S 
 \end{align*}
 \\[3pt]
 
@@ -154,9 +164,12 @@ policy-improvement:
 Bellman Optimal Equations: 
 \begin{align*}
     v_{*}(s) 
-    & = \max_{\pi} v_{\pi}(s) \\[3pt]
-    & = \max_{\pi} \left( r_{\pi} + \gamma P_{\pi} v \right) \\[3pt]
-    & = \max_{a \in A} q_{\pi *}(s, a) \quad \forall s \in S \\[3pt]
+    & = \max_{\pi} v_{\pi}(s) 
+        \qquad \qquad \qquad (Definition) \\[3pt]
+    & = \max_{\pi} \left( r_{\pi} + \gamma P_{\pi} v \right) 
+        \qquad \qquad (BOEs) \\[3pt]
+    & = \max_{a \in A} q_{\pi *}(s, a) 
+        \qquad \forall s \in S \\[3pt]
 \end{align*}
 \\[3pt]
 
@@ -169,25 +182,45 @@ Bellman Optimal Equations:
 \end{CJK}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%第三章
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
-\section*{ch3: Dynamic Programming (dynamics with model p)}
+\section*{ch3: Dynamic Programming}
+
+~ \\[3pt]
+\begin{CJK}{UTF8}{gbsn}
+    理解： \\[3pt]
+    Model-based. Dynamics with Model p. \\[3pt]
+    ①已知模型p，给定策略Pi，解BEs，得到价值V。 \\[3pt]
+    两种解法：矩阵求逆、数值迭代。 \\[3pt]
+\end{CJK}
 
 
 ~ \\[3pt]
-(1) Value Iteration: 
+~ \\[3pt]
+(1) Policy Iteration: 
+~ \\[3pt]
+Policy Evaluation: 
 \begin{align*}
-    v_{k+1} = \max_{\pi} \left( r_{\pi} + \gamma P_{\pi} v_{k} \right) 
+    v_{\pi_{k}} = r_{\pi_{k}} + \gamma P_{\pi_{k}} v_{\pi_{k}} 
+\end{align*}
+Policy Improvement: 
+\begin{align*}
+    \pi_{k+1} = \arg \max_{\pi} 
+    ( r_{\pi} + \gamma P_{\pi} v_{k} ) 
 \end{align*}
 
+
 ~ \\[3pt]
+~ \\[3pt]
+(2) Value Iteration: 
+\begin{align*}
+    v_{k+1} = \max_{\pi} ( r_{\pi} + \gamma P_{\pi} v_{k} ) 
+\end{align*}
 Policy Update: 
 \begin{align*}
     \pi_{k+1} = \arg \max_{\pi} 
-    \left( r_{\pi} + \gamma P_{\pi} v_{k} \right) 
+    ( r_{\pi} + \gamma P_{\pi} v_{k} ) 
 \end{align*}
-
-~ \\[3pt]
 Value Update: 
 \begin{align*}
     v_{k+1} = r_{\pi+1} + \gamma P_{\pi+1} v_{k} 
@@ -196,36 +229,15 @@ Value Update:
 
 ~ \\[3pt]
 ~ \\[3pt]
-(2) Policy Iteration: 
-
-~ \\[3pt]
-Policy Evaluation: (matrix solution vs. iteration solution)
-\begin{align*}
-    v_{\pi_{k}} = r_{\pi_{k}} + \gamma P_{\pi_{k}} v_{\pi_{k}} 
-\end{align*}
-
-~ \\[3pt]
-Policy Improvement: 
-\begin{align*}
-    \pi_{k+1} = \arg \max_{\pi} 
-    \left( r_{\pi} + \gamma P_{\pi} v_{k} \right) 
-\end{align*}
-
-
-~ \\[3pt]
-~ \\[3pt]
-(3) Turncated Iteration: 
-~ \\[3pt]
-
-~ \\[3pt]
+(3) Turncated Iteration: \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
-    值迭代有限次数，介于1次与无穷次之间；值也未稳定，就进行策略改进 \\[3pt]
+    值迭代有限次数（介于1次与无穷次之间）；值也未稳定，就进行策略改进 \\[3pt]
 \end{CJK}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%第四章
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
-\section*{ch4: Monte Carlo (model-free, dynamics with trajectory)}
+\section*{ch4: Monte Carlo}
 
 
 ~ \\[3pt]
@@ -241,6 +253,7 @@ Sample:
 ~ \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
     理解： \\[3pt]
+    Model-free. Dynamics with Trajectory. \\[3pt]
     ①采样进行估计，基于概率论的大数定理。 \\[3pt]
     ②episode长度（探索半径是否覆盖终点？）对估值影响，最优价值是否反向传播。 \\[3pt]
     ③估计的更新方式，非增长式（等着一起算）和增长式（来一个算一个）。 \\[3pt]
@@ -286,6 +299,12 @@ Sample:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 \section*{*stochastic approximation}
+
+
+~ \\[3pt]
+\begin{CJK}{UTF8}{gbsn}
+    以某形式的公式，为理论依据，进行实际采样与近似估计。 \\[3pt]
+\end{CJK}
 
 
 ~ \\[3pt]
@@ -354,8 +373,62 @@ GD \quad + \quad (Mini)Batch GD \quad + \quad Stochastic GD:
 
 ~ \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
-    (1) 基于数据 transition 的价值估计、策略改进： \\[3pt]
+    理解: \\[3pt]
+    Model-free. Dynamics with Transition. \\[3pt]
+    ①TD时序差分：在不同时刻，对同一个量估计，有差，利用差改进估计。 \\[3pt]
+    ②没有模型p、只有数据t，进行估计： \\[3pt]
+    MC利用整条trajectory，估计V、Q，离线/无偏/大方差； \\[3pt]
+    TD利用片段transition，估计V、Q，在线/有偏/小方差。 \\[3pt]
+    ③SARSA，用TD估计某个Pi的Q。 \\[3pt]
+    ④Q-Learning，用TD直接估计Q*。（异轨，提取共性MDP-Q*信息） \\[3pt]
+    ⑤行为策略采集数据，使用采集数据，估计目标策略（TD-target的形式）的值。 \\[3pt]
+    on-policy vs. off-policy。 \\[3pt]
 \end{CJK}
+
+
+~ \\[3pt]
+(1) TD-V: 
+\begin{align*}
+    v_{t+1} (s_{t}) &= v_{t} (s_{t}) + \alpha_{t} 
+        [[r_{t+1} + \gamma v_{t} (s_{t+1})] - v_{t} (s_{t})] \\[3pt]
+    v_{t+1} (s)     &= v_{t} (s) 
+    \qquad \forall s \neq s_{t} \\[3pt]
+\end{align*}
+
+
+~ \\[3pt]
+(2) TD-Q: \qquad SARSA 
+
+~ \\[3pt]
+Policy Evaluation: 
+\begin{align*}
+    q_{t+1} (s_{t}, a_{t}) 
+        &= q_{t} (s_{t}, a_{t}) + \alpha_{t} (s_{t}, a_{t}) 
+        [ r_{t+1} + \gamma q_{t} (s_{t+1}, a_{t+1}) 
+        - q_{t} (s_{t}, a_{t}) ] \\[3pt]
+    q_{t+1} (s, a) &= q_{t} (s, a) 
+    \qquad \forall (s, a) \neq (s_{t}, a_{t}) 
+\end{align*}
+
+~ \\[3pt]
+Policy Improvement: \\[3pt]
+\begin{CJK}{UTF8}{gbsn}
+    Q could be not in the convergence state 
+    with the current Pi \\[3pt]
+    when the new epsilon-greedy policy generated. \\[3pt]
+\end{CJK}
+
+
+~ \\[3pt]
+(3) TD-Q*: \qquad Q-Learning 
+\begin{align*}
+    q_{t+1} (s_{t}, a_{t}) 
+        &= q_{t} (s_{t}, a_{t}) + \alpha_{t} (s_{t}, a_{t}) 
+        [ r_{t+1} + \gamma \max_{a} q_{t} (s_{t+1}, a) 
+        - q_{t} (s_{t}, a_{t}) ] \\[3pt]
+    q_{t+1} (s, a) &= q_{t} (s, a) 
+    \qquad \forall (s, a) \neq (s_{t}, a_{t}) 
+\end{align*}
 
 
 \end{document}
