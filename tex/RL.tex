@@ -90,9 +90,9 @@
          \qquad \qquad \qquad \qquad \qquad \qquad (Definition) \\[3pt]
       &= E_{\pi} \left[ R_{t+1} + \gamma G_{t+1} \mid S_{t}=s \right] 
          \qquad \qquad \qquad \qquad (TD-0) \\[3pt]
-      &= E_{\pi} \left[ R_{t+1} + R_{t+2} + R_{t+3} + ... 
+      &= E_{\pi} \left[ R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... 
          \mid S_{t}=s \right] 
-         \qquad (TD-n)(TD-\Join =MC) \\[3pt]
+         \quad (TD-n)(TD-\Join =MC) \\[3pt]
       &= \sum_{a \in A} \pi(a \mid s) 
          \sum_{s^{\prime}, r} 
          p \left( s^{\prime}, r \mid s, a \right) * 
@@ -116,9 +116,9 @@
       &= E_{\pi} \left[ R_{t+1} + \gamma G_{t+1} 
          \mid S_{t}=s, A_{t}=a \right] 
          \qquad \qquad \qquad \qquad (TD-0) \\[3pt]
-      &= E_{\pi} \left[ R_{t+1} + R_{t+2} + R_{t+3} + ... 
+      &= E_{\pi} \left[ R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... 
          \mid S_{t}=s, A_{t}=a \right] 
-         \qquad (TD-n)(TD-\Join =MC) \\[3pt]
+         \quad (TD-n)(TD-\Join =MC) \\[3pt]
       &= \sum_{s^{\prime}, r} 
          p \left( s^{\prime}, r \mid s, a \right) * 
          \left[ r + \gamma E_{\pi} 
@@ -244,9 +244,15 @@ Value Update:
 Sample: 
 \begin{align*}
     v_{\pi}(s) 
-      &= E_{\pi} \left[ G_{t} \mid S_{t}=s \right] \\[3pt]
+      &= E_{\pi} \left[ 
+         G_{t} = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... 
+         \mid S_{t}=s \right] 
+         \qquad \qquad \quad (TD-\Join =MC) \\[3pt]
     q_{\pi}(s, a) 
-      &= E_{\pi} \left[ G_{t} \mid S_{t}=s, A_{t}=a \right] \\[3pt]
+      &= E_{\pi} \left[ 
+         G_{t} = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... 
+         \mid S_{t}=s, A_{t}=a \right] 
+         \qquad (TD-\Join =MC) \\[3pt]
 \end{align*}
 
 
@@ -254,7 +260,7 @@ Sample:
 \begin{CJK}{UTF8}{gbsn}
     理解： \\[3pt]
     Model-free. Dynamics with Trajectory. \\[3pt]
-    ①采样进行估计，基于概率论的大数定理。 \\[3pt]
+    ①采样进行估计，依据概率论的大数定理。 \\[3pt]
     ②episode长度（探索半径是否覆盖终点？）对估值影响，最优价值是否反向传播。 \\[3pt]
     ③估计的更新方式，非增长式（等着一起算）和增长式（来一个算一个）。 \\[3pt]
     ④epsilon关乎采样策略的探索性和最优性， \\[3pt]
@@ -264,7 +270,7 @@ Sample:
 
 
 ~ \\[3pt]
-(1) MC-Basic
+(1) MC-Basic 
 ~ \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
     二次循环，遍历所有(s, a)；某个策略下，每对采足够样，非增长式估计相应Q。 \\[3pt]
@@ -274,23 +280,23 @@ Sample:
 
 
 ~ \\[3pt]
-(2) MC-Exploring-Starts
+(2) MC-Exploring-Starts 
 ~ \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
-    起始分布覆盖(s, a)全集。 \\[3pt]
-    Pi下，充分利用每一个trajectory里的所有(s, a)对，访问，即增长式估计相应Q。 \\[3pt]
+    起始分布，覆盖(s, a)全集。 \\[3pt]
+    Pi下，充分利用每一个trajectory里的所有(s, a)对，访问，增长式估计相应Q。 \\[3pt]
     每一个trajectory结束后，Q值未必稳定，都进行策略改进。 \\[3pt]
     迭代。 \\[3pt]
 \end{CJK}
 
 
 ~ \\[3pt]
-(3) MC-epsilon-greedy
+(3) MC-epsilon-greedy 
 ~ \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
-    过程分布覆盖(s, a)全集。 \\[3pt]
+    过程分布，覆盖(s, a)全集。 \\[3pt]
     e-Pi下，充分利用每一个trajectory里的所有(s, a)对，
-    访问，即增长式估计相应Q。 \\[3pt]
+    访问，增长式估计相应Q。 \\[3pt]
     每一个trajectory结束后，Q值未必稳定，都进行策略改进，生成e-Pi。 \\[3pt]
     迭代。 \\[3pt]
 \end{CJK}
@@ -303,6 +309,7 @@ Sample:
 
 ~ \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
+    理解： \\[3pt]
     以某形式的公式，为理论依据，进行实际采样与近似估计。 \\[3pt]
 \end{CJK}
 
@@ -333,7 +340,8 @@ Sample:
             \tilde{g} \left( w_{k}, \eta_{k} \right) - 0 \right] \\[3pt]
             &= w_{k} + a_{k} 
             \left( g(w_{k}) + \eta_{k} \right) \\[3pt]
-            & iteration: \ \{w_{k}\} + \{\tilde{g}_{k}\} + \{a_{k}\} 
+            & \qquad iteration: \quad 
+            \{w_{k}\} + \{\tilde{g}_{k}\} + \{a_{k}\} 
 \end{align*}
 
 
@@ -380,24 +388,25 @@ GD \quad + \quad (Mini)Batch GD \quad + \quad Stochastic GD:
     MC利用整条trajectory，估计V、Q，离线/无偏/大方差； \\[3pt]
     TD利用片段transition，估计V、Q，在线/有偏/小方差。 \\[3pt]
     ③SARSA，用TD估计某个Pi的Q。 \\[3pt]
-    ④Q-Learning，用TD直接估计Q*。（异轨，提取共性MDP-Q*信息） \\[3pt]
-    ⑤行为策略采集数据，使用采集数据，估计目标策略（TD-target的形式）的值。 \\[3pt]
+    ④Q-Learning，用TD直接估计Q*。（异轨，从数据中提取共性MDP-Q*信息） \\[3pt]
+    ⑤行为策略采集数据，使用采集到的数据，计算TD-target（用什么形式利用数据）， \\[3pt]
+    目标策略的估计值趋向之，即TD-target代表着目标策略。 
     on-policy vs. off-policy。 \\[3pt]
 \end{CJK}
 
 
 ~ \\[3pt]
-(1) TD-V: 
+(1) TD-V: \qquad s-a-r-s 
 \begin{align*}
     v_{t+1} (s_{t}) &= v_{t} (s_{t}) + \alpha_{t} 
-        [[r_{t+1} + \gamma v_{t} (s_{t+1})] - v_{t} (s_{t})] \\[3pt]
+        [ [r_{t+1} + \gamma v_{t} (s_{t+1})] - v_{t} (s_{t}) ] \\[3pt]
     v_{t+1} (s)     &= v_{t} (s) 
     \qquad \forall s \neq s_{t} \\[3pt]
 \end{align*}
 
 
 ~ \\[3pt]
-(2) TD-Q: \qquad SARSA 
+(2) TD-Q: \qquad SA-R-SA 
 
 ~ \\[3pt]
 Policy Evaluation: 
@@ -413,14 +422,13 @@ Policy Evaluation:
 ~ \\[3pt]
 Policy Improvement: \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
-    Q could be not in the convergence state 
-    with the current Pi \\[3pt]
-    when the new epsilon-greedy policy generated. \\[3pt]
+    某个策略下的Q值可能还未估计稳定， \\[3pt]
+    就可以进行策略提升。最终目标提升至Q*。 \\[3pt]
 \end{CJK}
 
 
 ~ \\[3pt]
-(3) TD-Q*: \qquad Q-Learning 
+(3) TD-Q*: \qquad Q*-Learning 
 \begin{align*}
     q_{t+1} (s_{t}, a_{t}) 
         &= q_{t} (s_{t}, a_{t}) + \alpha_{t} (s_{t}, a_{t}) 
