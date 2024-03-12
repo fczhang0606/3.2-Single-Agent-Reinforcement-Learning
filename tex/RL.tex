@@ -389,9 +389,15 @@ GD \quad + \quad (Mini)Batch GD \quad + \quad Stochastic GD:
     TD利用片段transition，估计V、Q，在线/有偏/小方差。 \\[3pt]
     ③SARSA，用TD估计某个Pi的Q。 \\[3pt]
     ④Q-Learning，用TD直接估计Q*。（异轨，从数据中提取共性MDP-Q*信息） \\[3pt]
-    ⑤行为策略采集数据，使用采集到的数据，计算TD-target（用什么形式利用数据）， \\[3pt]
-    目标策略的估计值趋向之，即TD-target代表着目标策略。 
-    on-policy vs. off-policy。 \\[3pt]
+    ⑤行为策略采集数据，利用数据计算TD-target（数据组织形式）， \\[3pt]
+    目标策略的估计值趋向TD-target，即TD-target代表着目标策略。 \\[3pt]
+    ⑥on-policy: 用一个策略和环境交互，得到experience， 
+    估计这个策略，改进这个策略。 \\[3pt]
+    再用改进的策略循环，交互、估计、改进，直至最优（这个系列的最优）。 \\[3pt]
+    off-policy: 一个策略和环境交互，得到experience， \\[3pt]
+    另一个策略被估计、被改进。（目标策略不易采集数据，所以需要行为策略，异轨） \\[3pt]
+    experience应当具有一些性质，能够架通两个策略， \\[3pt]
+    行为策略能够采到，目标策略能够使用。 \\[3pt]
 \end{CJK}
 
 
@@ -428,7 +434,7 @@ Policy Improvement: \\[3pt]
 
 
 ~ \\[3pt]
-(3) TD-Q*: \qquad Q*-Learning 
+(3) TD-Q*: \qquad Q*-Learning \quad (s-a-r-s) 
 \begin{align*}
     q_{t+1} (s_{t}, a_{t}) 
         &= q_{t} (s_{t}, a_{t}) + \alpha_{t} (s_{t}, a_{t}) 
