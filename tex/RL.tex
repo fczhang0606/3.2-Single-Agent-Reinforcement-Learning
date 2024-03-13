@@ -381,23 +381,23 @@ GD \quad + \quad (Mini)Batch GD \quad + \quad Stochastic GD:
 
 ~ \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
-    理解: \\[3pt]
-    Model-free. Dynamics with Transition. \\[3pt]
-    ①TD时序差分：在不同时刻，对同一个量估计，有差，利用差改进估计。 \\[3pt]
-    ②没有模型p、只有数据t，进行估计： \\[3pt]
-    MC利用整条trajectory，估计V、Q，离线/无偏/大方差； \\[3pt]
-    TD利用片段transition，估计V、Q，在线/有偏/小方差。 \\[3pt]
-    ③SARSA，用TD估计某个Pi的Q。 \\[3pt]
-    ④Q-Learning，用TD直接估计Q*。（异轨，从数据中提取共性MDP-Q*信息） \\[3pt]
-    ⑤行为策略采集数据，利用数据计算TD-target（数据组织形式）， \\[3pt]
-    目标策略的估计值趋向TD-target，即TD-target代表着目标策略。 \\[3pt]
+    理解: \\[5pt]
+    Model-free. Dynamics with Transition. \\[5pt]
+    ①TD时序差分：在不同时刻，对同一个量估计，有差，利用差改进估计。 \\[5pt]
+    ②没有模型p、只有数据t，进行估计： \\[5pt]
+    MC利用整条trajectory，估计V、Q，离线/无偏/大方差； \\[5pt]
+    TD利用片段transition，估计V、Q，在线/有偏/小方差。 \\[5pt]
+    ③SARSA，用TD估计某个Pi的Q。 \\[5pt]
+    ④Q-Learning，用TD直接估计Q*。（异轨，从数据中提取共性MDP-Q*信息） \\[5pt]
+    ⑤行为策略采集数据，利用数据计算TD-target（数据组织形式）， \\[5pt]
+    目标策略的估计值趋向TD-target，即TD-target代表着目标策略。 \\[5pt]
     ⑥on-policy: 用一个策略和环境交互，得到experience， 
-    估计这个策略，改进这个策略。 \\[3pt]
-    再用改进的策略循环，交互、估计、改进，直至最优（这个系列的最优）。 \\[3pt]
-    off-policy: 一个策略和环境交互，得到experience， \\[3pt]
-    另一个策略被估计、被改进。（目标策略不易采集数据，所以需要行为策略，异轨） \\[3pt]
-    experience应当具有一些性质，能够架通两个策略， \\[3pt]
-    行为策略能够采到，目标策略能够使用。 \\[3pt]
+    估计这个策略，改进这个策略。 \\[5pt]
+    再用改进的策略循环，交互、估计、改进，直至最优（这个系列的最优）。 \\[5pt]
+    off-policy: 一个策略和环境交互，得到experience， \\[5pt]
+    另一个策略被估计、被改进。（目标策略不易采集数据，所以需要行为策略，异轨） \\[5pt]
+    experience应当具有一些性质，能够架通两个策略， \\[5pt]
+    行为策略能够采到，目标策略能够使用。 \\[5pt]
 \end{CJK}
 
 
@@ -410,6 +410,7 @@ GD \quad + \quad (Mini)Batch GD \quad + \quad Stochastic GD:
     \qquad \forall s \neq s_{t} \\[3pt]
 \end{align*}
 
+\newpage
 
 ~ \\[3pt]
 (2) TD-Q: \qquad SA-R-SA 
@@ -435,6 +436,9 @@ Policy Improvement: \\[3pt]
 
 ~ \\[3pt]
 (3) TD-Q*: \qquad Q*-Learning \quad (s-a-r-s) 
+
+~ \\[3pt]
+Value Improvement: 
 \begin{align*}
     q_{t+1} (s_{t}, a_{t}) 
         &= q_{t} (s_{t}, a_{t}) + \alpha_{t} (s_{t}, a_{t}) 
@@ -443,6 +447,131 @@ Policy Improvement: \\[3pt]
     q_{t+1} (s, a) &= q_{t} (s, a) 
     \qquad \forall (s, a) \neq (s_{t}, a_{t}) 
 \end{align*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section*{ch6: Value Function Approximation}
+
+
+~ \\[3pt]
+\begin{CJK}{UTF8}{gbsn}
+    理解: \\[3pt]
+    ①函数拟合的优势：用更少的参数量（存储），估计，更多的状态量（泛化）； \\[3pt]
+    原因在于，函数这种表达形式，存储了更本质的信息。 \\[3pt]
+    函数拟合的劣势：存在精度损失。 \\[3pt]
+    函数拟合的关键：最优的结构 + 最优的参数，提升拟合准确程度。 \\[3pt]
+    ②状态分布(.)：平均分布U、稳态分布D（D + (pi+p) = D）。 \\[3pt]
+    优化时，SGD将不同分布吸收拉平了。 \\[3pt]
+    ③某个真实分布中的一系列真值，形成一个超面； \\[3pt]
+    经过各种采样，得到超面的部分观测真值； \\[3pt]
+    建立一个模型并优化参数，用来拟合部分观测真值得到的超面。 \\[3pt]
+\end{CJK}
+
+
+~ \\[3pt]
+(1) Objective Function: 
+\begin{align*}
+    J(w) = E_{S \sim (.)} 
+           [ (v_{\pi}(S) - \tilde{v}(S, w) )^2 ] 
+\end{align*}
+
+~ \\[3pt]
+(2) Optimazation: 
+\begin{align*}
+    w_{k+1} & 
+            \quad = \quad w_{k} - \alpha_{k} 
+            \nabla_{w} J(w_{k}) \\[3pt]
+    w_{t+1} & 
+            \quad = \quad w_{t} + \alpha_{t} 
+            (v_{\pi}(s_{t}) - \tilde{v}(s_{t}, w_{t})) 
+            \nabla_{w} \tilde{v}(s_{t}, w_{t}) 
+\end{align*}
+
+~ \\[3pt]
+(3) Algorithm: 
+\begin{align*}
+    w_{t+1} & 
+            \quad = \quad w_{t} + \alpha_{t} 
+            (g_{t} - \tilde{v}(s_{t}, w_{t})) 
+            \nabla_{w} \tilde{v}(s_{t}, w_{t}) 
+            \qquad \qquad \qquad \qquad \quad MC+VA \\[3pt]
+    w_{t+1} & 
+            \quad = \quad w_{t} + \alpha_{t} 
+            [r_{t+1} + \gamma \tilde{v}(s_{t+1}, w_{t}) 
+            - \tilde{v}(s_{t}, w_{t})] 
+            \nabla_{w} \tilde{v}(s_{t}, w_{t}) 
+            \qquad TD+VA 
+\end{align*}
+
+~ \\[3pt]
+(4) Approximator: 
+\begin{align*}
+    linear    &= kx + b \\[3pt]
+    nonlinear &= neural \ \ network \\[3pt]
+\end{align*}
+
+
+\newpage
+
+
+~ \\[3pt]
+(5) SARSA + VA: \qquad (SA-R-SA + q- + w) 
+
+~ \\[3pt]
+Value Update(w): 
+\begin{align*}
+    w_{t+1} & 
+            \quad = \quad w_{t} + \alpha_{t} 
+            [ r_{t+1} + \gamma \tilde{q}(s_{t+1}, a_{t+1}, w_{t}) 
+            - \tilde{q}(s_{t}, a_{t}, w_{t}) ] 
+            \nabla_{w} \tilde{q}(s_{t}, a_{t}, w_{t}) 
+\end{align*}
+
+~ \\[3pt]
+Policy Improvement: epsilon-greedy
+
+
+~ \\[3pt]
+~ \\[3pt]
+~ \\[3pt]
+~ \\[3pt]
+~ \\[3pt]
+(6) Q*-Learning + VA: \qquad (S-A-R-S + q- + w) 
+
+~ \\[3pt]
+Value Update(w): 
+\begin{align*}
+    w_{t+1} & 
+            \quad = \quad w_{t} + \alpha_{t} 
+            [ r_{t+1} + \gamma \max_{a} \tilde{q}(s_{t+1}, a, w_{t}) 
+            - \tilde{q}(s_{t}, a_{t}, w_{t}) ] 
+            \nabla_{w} \tilde{q}(s_{t}, a_{t}, w_{t}) 
+\end{align*}
+
+~ \\[3pt]
+Policy Improvement: (epsilon-)greedy
+
+
+~ \\[3pt]
+~ \\[3pt]
+~ \\[3pt]
+~ \\[3pt]
+~ \\[3pt]
+(7) Deep Q*-Learning: \qquad (Buffer(S-A-R-S) + NN(w)*2) 
+
+~ \\[3pt]
+Value Update(w): 
+\begin{align*}
+    w_{t+1} & 
+            \quad = \quad w_{t} + \alpha_{t} 
+            [ r_{t+1} + \gamma \max_{a} \tilde{q}(s_{t+1}, a, w_{T}) 
+            - \tilde{q}(s_{t}, a_{t}, w_{t}) ] 
+            \nabla_{w} \tilde{q}(s_{t}, a_{t}, w_{t}) 
+\end{align*}
+
+~ \\[3pt]
+Policy Improvement: (epsilon-)greedy
 
 
 \end{document}
