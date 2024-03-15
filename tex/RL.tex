@@ -12,7 +12,7 @@
 %\geometry{a4paper, landscape}  % 设置A4纸张并转为横向模式
 \usepackage{CJKutf8}
 
-
+\usepackage{booktabs}  % 三线表
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%正文内容
 \begin{document}
 
@@ -449,6 +449,25 @@ Value Improvement:
 \end{align*}
 
 
+~ \\[96pt]
+*(DP+MC+TD)-Summary: \\[3pt]
+~ \\[3pt]
+\centering
+\begin{tabular}{ccc}  % centering*3 
+
+    \toprule 
+        value & DP-model(p)                 & TD-data(t)  \\[3pt]
+    \midrule 
+        v     & Policy-Evaluation(vBEs)     & TD(0/n/...) \\[3pt]
+        v*    & Value-iteration(vBOEs)      & -           \\[3pt]
+        q     & Policy-Evaluation(qBEs)     & TD(0)=SARSA \\[3pt]
+        q*    & Value-iteration(qBOEs)      & Q*-Learning \\[3pt]
+    \bottomrule 
+
+\end{tabular}
+\flushleft
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 \section*{ch6: Value Function Approximation}
@@ -550,7 +569,7 @@ Value Update(w):
 \end{align*}
 
 ~ \\[3pt]
-Policy Improvement: (epsilon-)greedy
+Policy Improvement: (epsilon-)greedy 
 
 
 ~ \\[3pt]
@@ -571,7 +590,7 @@ Value Update(w):
 \end{align*}
 
 ~ \\[3pt]
-Policy Improvement: (epsilon-)greedy
+Policy Improvement: (epsilon-)greedy 
 
 
 \end{document}
