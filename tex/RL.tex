@@ -485,6 +485,7 @@ Value Improvement:
     ③某个真实分布中的一系列真值，形成一个超面； \\[3pt]
     经过各种采样，得到超面的部分观测真值； \\[3pt]
     建立一个模型并优化参数，用来拟合部分观测真值得到的超面。 \\[3pt]
+    ④自举，让不均匀的高低估扩展，可能导致最优性发生变化。 \\[3pt]
 \end{CJK}
 
 
@@ -591,6 +592,14 @@ Value Update(w):
 
 ~ \\[3pt]
 Policy Improvement: (epsilon-)greedy 
+
+
+~ \\[3pt]
+~ \\[3pt]
+~ \\[3pt]
+~ \\[3pt]
+~ \\[3pt]
+(8) Double Q*-Net: \qquad (Buffer(S-A-R-S) + NN(w)*2) 
 
 
 \end{document}
