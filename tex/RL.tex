@@ -13,6 +13,8 @@
 \usepackage{CJKutf8}
 
 \usepackage{booktabs}  % 三线表
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%正文内容
 \begin{document}
 
@@ -579,6 +581,7 @@ Policy Improvement: (epsilon-)greedy
 ~ \\[3pt]
 ~ \\[3pt]
 (7) Deep Q*-Learning: \qquad (Buffer(S-A-R-S) + NN(w)*2) 
+\quad (continuous states + discrete actions)
 
 ~ \\[3pt]
 Value Update(w): 
@@ -600,6 +603,33 @@ Policy Improvement: (epsilon-)greedy
 ~ \\[3pt]
 ~ \\[3pt]
 (8) Double Q*-Net: \qquad (Buffer(S-A-R-S) + NN(w)*2) 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section*{ch7: Policy Gradient}
+
+
+~ \\[3pt]
+(1)Policy Network: (Storage + Generalization) 
+\begin{align*}
+    \pi (a \mid s; \theta ) 
+\end{align*}
+~ \\[3pt]
+(2)Optimal Policy: (!= Optimal Values) 
+\begin{align*}
+    \max_{\theta} \ metric[ \pi (a \mid s; \theta ) ] 
+\end{align*}
+~ \\[3pt]
+(3)Distribution: 
+\begin{align*}
+    d \ is not \ related \ with \ \pi &: Uniform \ Distribution \\[3pt]
+    d \ is \ related \ with \ \pi &: Stable \ Distribution \\[3pt]
+\end{align*}
+
+\begin{CJK}{UTF8}{gbsn}
+    ①
+\end{CJK}
 
 
 \end{document}
