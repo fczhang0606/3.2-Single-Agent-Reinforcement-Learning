@@ -634,12 +634,14 @@ Policy Improvement: (epsilon-)greedy
     \pi (a \mid s; \theta ) 
     \qquad \qquad \qquad \qquad \text{from Distribution to Network Model} 
 \end{align*}
+
 ~ \\[3pt]
 (2)Optimal Policy: (!= Optimal Values) 
 \begin{align*}
     \max_{\theta} \ metrics[ \pi (a \mid s; \theta ) ] 
     \qquad \qquad \text{from Values to Metircs} 
 \end{align*}
+
 ~ \\[3pt]
 (3)Distribution(d): 
 \begin{align*}
@@ -652,21 +654,43 @@ Policy Improvement: (epsilon-)greedy
     d_{0}   &: e.g. 
             \qquad Specific \ Distribution : \qquad \qquad \ 
             d_{0}(s_{0}) = 1 
-            \qquad  d_{0}(s) = 0 \qquad \forall s \neq s_{0} \\[3pt]
+            \qquad  d_{0}(s) = 0 \qquad \forall s \neq s_{0} 
 \end{align*}
+
 ~ \\[3pt]
-(4)Metric-1: average state value 
+(4)Metric-1: average state value (?) = average average return 
 \begin{align*}
-    J_{1} (\theta) \ = \ \overline{v_{\pi}} 
-                   \ = \ E_{s \sim d} [ v_{\pi}(S) ] 
-                   \ = \ \sum_{s \in d} d(s) v_{\pi}(s) 
-                   \ = \ d^{T} \cdot v_{\pi} 
+    J_{1} (\theta) & \ = \ \overline{v_{\pi}} 
+                     \ = \ E_{s \sim d} [ v_{\pi}(S) ] 
+                     \ = \ \sum_{s \in d} d(s) v_{\pi}(s) 
+                     \ = \ d^{T} \cdot v_{\pi} \\[3pt]
+                   & \ = \ E \left[ \sum_{t = 0}^{\infty} 
+                                    \gamma^{t} R_{t+1} \right] 
 \end{align*}
 
+~ \\[3pt]
+(5)Metric-2: average one-step reward = average infinite reward 
+\begin{align*}
+    J_{2} (\theta) & \ = \ \overline{r_{\pi}} 
+                     \ = \ E_{s \sim d} [ r_{\pi}(S) ] 
+                     \ = \ \sum_{s \in d} d(s) r_{\pi}(s) \\[3pt]
+                   & \ = \ \lim_{n \to \infty} \frac{1}{n} 
+                     E \left[ \sum_{k = 1}^{n} R_{t+k} \right] 
+\end{align*}
 
-\begin{CJK}{UTF8}{gbsn}
-    ①
-\end{CJK}
+~ \\[3pt]
+(6)Metrics-Relationship: 
+\begin{align*}
+    \overline{r_{\pi}} = (1 - \gamma) \overline{v_{\pi}} 
+\end{align*}
+
+~ \\[3pt]
+(7)Gradient: (derivation process) 
+\begin{align*}
+    \nabla_{\theta} J(\theta) &= \sum_{s \in S} \eta (s) 
+    \sum_{a \in A} \nabla_{\theta} \pi (a \mid s; \theta) q_{\pi} (s, a) \\[3pt]
+    &= E \left[ \nabla_{\theta} ln \pi (A \mid S; \theta) q_{\pi} (S, A) \right] 
+\end{align*}
 
 
 \end{document}
