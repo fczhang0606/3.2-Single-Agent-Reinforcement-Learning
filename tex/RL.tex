@@ -611,22 +611,58 @@ Policy Improvement: (epsilon-)greedy
 
 
 ~ \\[3pt]
+*Policy-Summary: \\[3pt]
+~ \\[3pt]
+\centering
+\begin{tabular}{ccc}  % centering*3 
+
+    \toprule 
+        & \qquad \qquad \qquad \qquad \qquad \qquad \qquad Policy & \\[3pt]
+    \midrule 
+        Form          & Distribution        & Network Model         \\[3pt]
+        Evaluation    & Values (V + Q)      & Performence Metrics   \\[3pt]
+        Optimazation  & (epsilon)-greedy    & Gradient-Descent      \\[3pt]
+    \bottomrule 
+
+\end{tabular}
+\flushleft
+
+
+~ \\[3pt]
 (1)Policy Network: (Storage + Generalization) 
 \begin{align*}
     \pi (a \mid s; \theta ) 
-    \qquad \qquad \qquad \qquad \text{from Distribution to Network} 
+    \qquad \qquad \qquad \qquad \text{from Distribution to Network Model} 
 \end{align*}
 ~ \\[3pt]
 (2)Optimal Policy: (!= Optimal Values) 
 \begin{align*}
-    \max_{\theta} \ metric[ \pi (a \mid s; \theta ) ] 
+    \max_{\theta} \ metrics[ \pi (a \mid s; \theta ) ] 
+    \qquad \qquad \text{from Values to Metircs} 
 \end{align*}
 ~ \\[3pt]
 (3)Distribution(d): 
 \begin{align*}
-    d \ is \ not \ related \ with \ \pi &: Uniform \ Distribution \\[3pt]
-    d \ is \ related \ with \ \pi &: Stable \ Distribution \\[3pt]
+    d - \pi &: e.g. 
+            \qquad Uniform \ Distribution : \qquad \qquad 
+            d(s) = 1 / | S | \qquad \forall s \in S \\[3pt]
+    d + \pi &: e.g. 
+            \qquad Stable \ Distribution : \qquad \qquad \quad \ 
+            d_{\pi} \cdot P_{\pi} = d_{\pi} \\[3pt]
+    d_{0}   &: e.g. 
+            \qquad Specific \ Distribution : \qquad \qquad \ 
+            d_{0}(s_{0}) = 1 
+            \qquad  d_{0}(s) = 0 \qquad \forall s \neq s_{0} \\[3pt]
 \end{align*}
+~ \\[3pt]
+(4)Metric-1: average state value 
+\begin{align*}
+    J_{1} (\theta) \ = \ \overline{v_{\pi}} 
+                   \ = \ E_{s \sim d} [ v_{\pi}(S) ] 
+                   \ = \ \sum_{s \in d} d(s) v_{\pi}(s) 
+                   \ = \ d^{T} \cdot v_{\pi} 
+\end{align*}
+
 
 \begin{CJK}{UTF8}{gbsn}
     ①
