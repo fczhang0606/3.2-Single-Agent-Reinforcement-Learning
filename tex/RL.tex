@@ -47,28 +47,28 @@
 
 % 模型p
 \begin{align*}
-    p \left( s^{\prime}, r \mid s, a \right) 
-    = \operatorname{Pr} \left\{ S_{t}=s^{\prime}, R_{t}=r \mid 
+    p \left( s^{\prime}, r | s, a \right) 
+    = \operatorname{Pr} \left\{ S_{t}=s^{\prime}, R_{t}=r | 
     S_{t-1}=s, A_{t-1}=a \right\} 
 \end{align*}
 
 % 模型p=1
 \begin{align*}
     \sum_{s^{\prime} \in S} \sum_{r \in R} 
-    p \left( s^{\prime}, r \mid s, a \right) = 1 
+    p \left( s^{\prime}, r | s, a \right) = 1 
 \end{align*}
 
 % 模型p-s'
 \begin{align*}
-    p \left( s^{\prime} \mid s, a \right) 
-    = \sum_{r \in R} p \left( s^{\prime}, r \mid s, a \right) 
+    p \left( s^{\prime} | s, a \right) 
+    = \sum_{r \in R} p \left( s^{\prime}, r | s, a \right) 
 \end{align*}
 
 % 奖励r
 \begin{align*}
     r(s, a) = \sum_{s^{\prime} \in S} 
     \sum_{r \in R} 
-    \left( p \left( s^{\prime}, r \mid s, a \right) * r \right) 
+    \left( p \left( s^{\prime}, r | s, a \right) * r \right) 
 \end{align*}
 
 
@@ -88,52 +88,52 @@
 % v
 \begin{align*}
     v_{\pi}(s) 
-      &= E_{\pi} \left[ G_{t} \mid S_{t}=s \right] 
+      &= E_{\pi} \left[ G_{t} | S_{t}=s \right] 
          \qquad \qquad \qquad \qquad \qquad \qquad (Definition) \\[3pt]
-      &= E_{\pi} \left[ R_{t+1} + \gamma G_{t+1} \mid S_{t}=s \right] 
+      &= E_{\pi} \left[ R_{t+1} + \gamma G_{t+1} | S_{t}=s \right] 
          \qquad \qquad \qquad \qquad (TD-0) \\[3pt]
       &= E_{\pi} \left[ R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... 
-         \mid S_{t}=s \right] 
+         | S_{t}=s \right] 
          \quad (TD-n)(TD-\Join =MC) \\[3pt]
-      &= \sum_{a \in A} \pi(a \mid s) 
+      &= \sum_{a \in A} \pi(a | s) 
          \sum_{s^{\prime}, r} 
-         p \left( s^{\prime}, r \mid s, a \right) * 
+         p \left( s^{\prime}, r | s, a \right) * 
          \left[ r + \gamma E_{\pi} 
-         \left[ G_{t+1} \mid S_{t+1}=s^{\prime} \right] \right] \\[3pt]
-      &= \sum_{a \in A} \pi(a \mid s) 
+         \left[ G_{t+1} | S_{t+1}=s^{\prime} \right] \right] \\[3pt]
+      &= \sum_{a \in A} \pi(a | s) 
          \sum_{s^{\prime}, r} 
-         p \left( s^{\prime}, r \mid s, a \right) * 
+         p \left( s^{\prime}, r | s, a \right) * 
          \left[ r + \gamma 
          v_{\pi} \left( s^{\prime} \right) \right] 
          \qquad (BEs) \\[3pt]
       &= \sum_{a \in A} 
-         \pi(a \mid s) * q_{\pi}(s, a) \\[3pt]
+         \pi(a | s) * q_{\pi}(s, a) \\[3pt]
 \end{align*}
 
 % q
 \begin{align*}
     q_{\pi}(s, a) 
-      &= E_{\pi} \left[ G_{t} \mid S_{t}=s, A_{t}=a \right] 
+      &= E_{\pi} \left[ G_{t} | S_{t}=s, A_{t}=a \right] 
       \qquad \qquad \qquad \qquad \qquad \qquad (Definition) \\[3pt]
       &= E_{\pi} \left[ R_{t+1} + \gamma G_{t+1} 
-         \mid S_{t}=s, A_{t}=a \right] 
+         | S_{t}=s, A_{t}=a \right] 
          \qquad \qquad \qquad \qquad (TD-0) \\[3pt]
       &= E_{\pi} \left[ R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... 
-         \mid S_{t}=s, A_{t}=a \right] 
+         | S_{t}=s, A_{t}=a \right] 
          \quad (TD-n)(TD-\Join =MC) \\[3pt]
       &= \sum_{s^{\prime}, r} 
-         p \left( s^{\prime}, r \mid s, a \right) * 
+         p \left( s^{\prime}, r | s, a \right) * 
          \left[ r + \gamma E_{\pi} 
-         \left[ G_{t+1} \mid S_{t+1}=s^{\prime} \right] \right] \\[3pt]
+         \left[ G_{t+1} | S_{t+1}=s^{\prime} \right] \right] \\[3pt]
       &= \sum_{s^{\prime}, r} 
-         p \left( s^{\prime}, r \mid s, a \right) * 
+         p \left( s^{\prime}, r | s, a \right) * 
          \left[ r + \gamma 
          v_{\pi} \left( s^{\prime} \right) \right] \\[3pt]
       &= \sum_{s^{\prime}, r} 
-         p \left( s^{\prime}, r \mid s, a \right) * 
+         p \left( s^{\prime}, r | s, a \right) * 
          \left[ r + \gamma 
          \sum_{a^{\prime} \in A} 
-         \pi ! \left( a^{\prime} \mid s^{\prime} \right) * 
+         \pi ! \left( a^{\prime} | s^{\prime} \right) * 
          q_{\pi} \left( s^{\prime}, a^{\prime} \right) \right] 
          \quad (BEs) \\[3pt]
 \end{align*}
@@ -248,12 +248,12 @@ Sample:
     v_{\pi}(s) 
       &= E_{\pi} \left[ 
          G_{t} = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... 
-         \mid S_{t}=s \right] 
+         | S_{t}=s \right] 
          \qquad \qquad \quad (TD-\Join =MC) \\[3pt]
     q_{\pi}(s, a) 
       &= E_{\pi} \left[ 
          G_{t} = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... 
-         \mid S_{t}=s, A_{t}=a \right] 
+         | S_{t}=s, A_{t}=a \right] 
          \qquad (TD-\Join =MC) \\[3pt]
 \end{align*}
 
@@ -580,7 +580,7 @@ Policy Improvement: (epsilon-)greedy
 ~ \\[3pt]
 ~ \\[3pt]
 ~ \\[3pt]
-(7) Deep Q*-Learning: \qquad (Buffer(S-A-R-S) + NN(w)*2) 
+(7) Deep Q*-Learning: \qquad (Buffer(S-A-R-S) + NN(w)*2) \\[3pt]
 \quad (continuous states + discrete actions)
 
 ~ \\[3pt]
@@ -631,14 +631,14 @@ Policy Improvement: (epsilon-)greedy
 ~ \\[3pt]
 (1)Policy Network: (Storage + Generalization) 
 \begin{align*}
-    \pi (a \mid s; \theta ) 
+    \pi (a | s; \theta ) 
     \qquad \qquad \qquad \qquad \text{from Distribution to Network Model} 
 \end{align*}
 
 ~ \\[3pt]
 (2)Optimal Policy: (!= Optimal Values) 
 \begin{align*}
-    \max_{\theta} \ metrics[ \pi (a \mid s; \theta ) ] 
+    \max_{\theta} \ metrics[ \pi (a | s; \theta ) ] 
     \qquad \qquad \text{from Values to Metircs} 
 \end{align*}
 
@@ -685,11 +685,25 @@ Policy Improvement: (epsilon-)greedy
 \end{align*}
 
 ~ \\[3pt]
-(7)Gradient: (derivation process) 
+(7)Gradient Ascent: (derivation process) 
 \begin{align*}
     \nabla_{\theta} J(\theta) &= \sum_{s \in S} \eta (s) 
-    \sum_{a \in A} \nabla_{\theta} \pi (a \mid s; \theta) q_{\pi} (s, a) \\[3pt]
-    &= E \left[ \nabla_{\theta} ln \pi (A \mid S; \theta) q_{\pi} (S, A) \right] 
+    \sum_{a \in A} \nabla_{\theta} \pi (a | s; \theta) q_{\pi} (s, a) \\[3pt]
+    &= E \left[ \nabla_{\theta} ln \pi (A | S; \theta) q_{\pi} (S, A) \right] \\[3pt]
+    \theta_{t+1} &= \theta_{t} + \alpha \nabla_{\theta} 
+                    ln \pi (a_{t} | s_{t}; \theta_{t}) q_{\pi} (s_{t}, a_{t}) \\[3pt]
+                 &= \theta_{t} + \alpha 
+                 \frac{q_{\pi} (s_{t}, a_{t})}{\pi (a_{t} | s_{t}; \theta_{t})} 
+                 \nabla_{\theta} \pi (a_{t} | s_{t}; \theta_{t}) 
+                 \qquad \text{exploitation + exploration} 
+\end{align*}
+
+~ \\[3pt]
+(8)REINFORCE: 
+\begin{align*}
+    \theta_{t+1} &= \theta_{t} + \alpha \nabla_{\theta} 
+                    ln \pi (a_{t} | s_{t}; \theta_{t}) q_{t} (s_{t}, a_{t}) \\[3pt]
+    & q_{\pi} (s_{t}, a_{t}) : \quad q_{t} (s_{t}, a_{t}) (MC) 
 \end{align*}
 
 
