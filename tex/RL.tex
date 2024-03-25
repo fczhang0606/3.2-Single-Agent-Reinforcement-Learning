@@ -685,17 +685,19 @@ Policy Improvement: (epsilon-)greedy
 \end{align*}
 
 ~ \\[3pt]
-(7)Gradient Ascent: (derivation process) 
+(7)Policy Gradient Theorem: 
 \begin{align*}
     \nabla_{\theta} J(\theta) &= \sum_{s \in S} \eta (s) 
-    \sum_{a \in A} \nabla_{\theta} \pi (a | s; \theta) q_{\pi} (s, a) \\[3pt]
+    \sum_{a \in A} \nabla_{\theta} \pi (a | s; \theta) q_{\pi} (s, a) 
+    \qquad \qquad \qquad \text{proof.} \\[3pt]
     &= E \left[ \nabla_{\theta} ln \pi (A | S; \theta) q_{\pi} (S, A) \right] \\[3pt]
     \theta_{t+1} &= \theta_{t} + \alpha \nabla_{\theta} 
-                    ln \pi (a_{t} | s_{t}; \theta_{t}) q_{\pi} (s_{t}, a_{t}) \\[3pt]
+                    ln \pi (a_{t} | s_{t}; \theta_{t}) q_{\pi} (s_{t}, a_{t}) 
+                    \qquad \qquad \qquad \text{stochastic gradient ascent} \\[3pt]
                  &= \theta_{t} + \alpha 
                  \frac{q_{\pi} (s_{t}, a_{t})}{\pi (a_{t} | s_{t}; \theta_{t})} 
                  \nabla_{\theta} \pi (a_{t} | s_{t}; \theta_{t}) 
-                 \qquad \text{exploitation + exploration} 
+                 \qquad \qquad \qquad \text{exploitation + exploration} 
 \end{align*}
 
 ~ \\[3pt]
