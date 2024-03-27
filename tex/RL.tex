@@ -728,5 +728,25 @@ Policy Improvement: (epsilon-)greedy
 \end{align*}
 
 
+~ \\[3pt]
+(2) A2C: \ \ \ \ \ {(TD-VA) \ + \ PG} 
+\begin{align*}
+    q_{\pi}(s_{t}, a_{t}) - BS & 
+            \quad = \quad 
+            \tilde{q}(s_{t}, a_{t}; w_{t}^{'}) 
+            - \tilde{v}(s_{t}; w_{t}) \\[3pt]
+    = \delta_{t} & 
+            \quad = \quad 
+            r_{t+1} + \gamma \tilde{v}(s_{t+1}; w_{t}) 
+            - \tilde{v}(s_{t}; w_{t}) \\[3pt]
+    w_{t+1} & 
+            \quad = \quad w_{t} + \alpha_{w} \delta_{t} 
+            \nabla_{w} \tilde{v}(s_{t}; w_{t}) \\[3pt]
+    \theta_{t+1} & 
+            \quad = \quad \theta_{t} + \alpha_{\theta} \nabla_{\theta} 
+            ln \pi (a_{t} | s_{t}; \theta_{t}) \delta_{t} 
+\end{align*}
+
+
 \end{document}
 
