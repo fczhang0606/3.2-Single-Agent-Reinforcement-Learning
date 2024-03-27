@@ -506,8 +506,8 @@ Value Improvement:
             \nabla_{w} J(w_{k}) \\[3pt]
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{t} 
-            (v_{\pi}(s_{t}) - \tilde{v}(s_{t}, w_{t})) 
-            \nabla_{w} \tilde{v}(s_{t}, w_{t}) 
+            (v_{\pi}(s_{t}) - \tilde{v}(s_{t}; w_{t})) 
+            \nabla_{w} \tilde{v}(s_{t}; w_{t}) 
 \end{align*}
 
 ~ \\[3pt]
@@ -515,14 +515,14 @@ Value Improvement:
 \begin{align*}
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{t} 
-            (g_{t} - \tilde{v}(s_{t}, w_{t})) 
-            \nabla_{w} \tilde{v}(s_{t}, w_{t}) 
+            (g_{t} - \tilde{v}(s_{t}; w_{t})) 
+            \nabla_{w} \tilde{v}(s_{t}; w_{t}) 
             \qquad \qquad \qquad \qquad \quad MC+VA \\[3pt]
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{t} 
-            [r_{t+1} + \gamma \tilde{v}(s_{t+1}, w_{t}) 
-            - \tilde{v}(s_{t}, w_{t})] 
-            \nabla_{w} \tilde{v}(s_{t}, w_{t}) 
+            [r_{t+1} + \gamma \tilde{v}(s_{t+1}; w_{t}) 
+            - \tilde{v}(s_{t}; w_{t})] 
+            \nabla_{w} \tilde{v}(s_{t}; w_{t}) 
             \qquad TD+VA 
 \end{align*}
 
@@ -545,9 +545,9 @@ Value Update(w):
 \begin{align*}
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{t} 
-            [ r_{t+1} + \gamma \tilde{q}(s_{t+1}, a_{t+1}, w_{t}) 
-            - \tilde{q}(s_{t}, a_{t}, w_{t}) ] 
-            \nabla_{w} \tilde{q}(s_{t}, a_{t}, w_{t}) 
+            [ r_{t+1} + \gamma \tilde{q}(s_{t+1}, a_{t+1}; w_{t}) 
+            - \tilde{q}(s_{t}, a_{t}; w_{t}) ] 
+            \nabla_{w} \tilde{q}(s_{t}, a_{t}; w_{t}) 
 \end{align*}
 
 ~ \\[3pt]
@@ -566,9 +566,9 @@ Value Update(w):
 \begin{align*}
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{t} 
-            [ r_{t+1} + \gamma \max_{a} \tilde{q}(s_{t+1}, a, w_{t}) 
-            - \tilde{q}(s_{t}, a_{t}, w_{t}) ] 
-            \nabla_{w} \tilde{q}(s_{t}, a_{t}, w_{t}) 
+            [ r_{t+1} + \gamma \max_{a} \tilde{q}(s_{t+1}, a; w_{t}) 
+            - \tilde{q}(s_{t}, a_{t}; w_{t}) ] 
+            \nabla_{w} \tilde{q}(s_{t}, a_{t}; w_{t}) 
 \end{align*}
 
 ~ \\[3pt]
@@ -588,9 +588,9 @@ Value Update(w):
 \begin{align*}
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{t} 
-            [ r_{t+1} + \gamma \max_{a} \tilde{q}(s_{t+1}, a, w_{T}) 
-            - \tilde{q}(s_{t}, a_{t}, w_{t}) ] 
-            \nabla_{w} \tilde{q}(s_{t}, a_{t}, w_{t}) 
+            [ r_{t+1} + \gamma \max_{a} \tilde{q}(s_{t+1}, a; w_{T}) 
+            - \tilde{q}(s_{t}, a_{t}; w_{t}) ] 
+            \nabla_{w} \tilde{q}(s_{t}, a_{t}; w_{t}) 
 \end{align*}
 
 ~ \\[3pt]
@@ -706,6 +706,25 @@ Policy Improvement: (epsilon-)greedy
     \theta_{t+1} &= \theta_{t} + \alpha \nabla_{\theta} 
                     ln \pi (a_{t} | s_{t}; \theta_{t}) q_{t} (s_{t}, a_{t}) \\[3pt]
     & q_{\pi} (s_{t}, a_{t}) : \quad q_{t} (s_{t}, a_{t}) (MC) 
+\end{align*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section*{ch8: Actor Critic}
+
+
+~ \\[3pt]
+(1) QAC: \ \ \ \ \ {(SARSA-VA) \ + \ PG} 
+\begin{align*}
+    w_{t+1} & 
+            \quad = \quad w_{t} + \alpha_{w} 
+            [ r_{t+1} + \gamma \tilde{q}(s_{t+1}, a_{t+1}; w_{t}) 
+            - \tilde{q}(s_{t}, a_{t}; w_{t}) ] 
+            \nabla_{w} \tilde{q}(s_{t}, a_{t}; w_{t}) \\[3pt]
+    \theta_{t+1} & 
+            \quad = \quad \theta_{t} + \alpha_{\theta} \nabla_{\theta} 
+            ln \pi (a_{t} | s_{t}; \theta_{t}) \tilde{q}(s_{t}, a_{t}; w_{t+1}) 
 \end{align*}
 
 
