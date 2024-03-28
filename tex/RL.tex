@@ -690,7 +690,9 @@ Policy Improvement: (epsilon-)greedy
     \nabla_{\theta} J(\theta) &= \sum_{s \in S} \eta (s) 
     \sum_{a \in A} \nabla_{\theta} \pi (a | s; \theta) q_{\pi} (s, a) 
     \qquad \qquad \qquad \text{proof. Zhang Weinan} \\[3pt]
-    &= E \left[ \nabla_{\theta} ln \pi (A | S; \theta) q_{\pi} (S, A) \right] \\[3pt]
+    &= E \left[ \nabla_{\theta} ln \pi (A | S; \theta) q_{\pi} (S, A) \right] 
+    \qquad \qquad \qquad \qquad 
+    \text{q: (1)MC   (2)MC-BS   (3)Advantage   (4)TD} \\[3pt]
     \theta_{t+1} &= \theta_{t} + \alpha \nabla_{\theta} 
                     ln \pi (a_{t} | s_{t}; \theta_{t}) q_{\pi} (s_{t}, a_{t}) 
                     \qquad \qquad \qquad \text{stochastic gradient ascent} \\[3pt]
@@ -707,6 +709,10 @@ Policy Improvement: (epsilon-)greedy
                     ln \pi (a_{t} | s_{t}; \theta_{t}) q_{t} (s_{t}, a_{t}) \\[3pt]
     & q_{\pi} (s_{t}, a_{t}) : \quad q_{t} (s_{t}, a_{t}) (MC) 
 \end{align*}
+
+
+~ \\[3pt]
+(9)REINFORCE-BS: 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

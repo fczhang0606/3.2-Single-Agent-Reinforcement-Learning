@@ -1,6 +1,6 @@
 ################################################################################################################################
-论文    https://proceedings.neurips.cc/paper_files/paper/1999/file/6449f44a102fde848669bdd9eb6b76fa-Paper.pdf
-	https://arxiv.org/pdf/1602.01783.pdf
+论文    QAC	https://proceedings.neurips.cc/paper_files/paper/1999/file/6449f44a102fde848669bdd9eb6b76fa-Paper.pdf
+	A3C	https://arxiv.org/pdf/1602.01783.pdf
 
 主页    
 
