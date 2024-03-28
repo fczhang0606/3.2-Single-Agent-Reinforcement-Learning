@@ -754,5 +754,16 @@ Policy Improvement: (epsilon-)greedy
 \end{align*}
 
 
+~ \\[3pt]
+Importance Sampling: 
+\begin{align*}
+    E_{x-p} [f(x)] &= \int_{x} p(x) f(x) \,dx \\[3pt]
+                   &= \int_{x} q(x) \frac{p(x)}{q(x)} f(x) \,dx \\[3pt]
+                   &= E_{x-q} \left[ \frac{p(x)}{q(x)} f(x) \right] 
+                   \qquad \qquad \qquad \qquad 
+                   \beta(x) = \frac{p(x)}{q(x)} = \frac{\pi(x)}{\mu(x)} 
+\end{align*}
+
+
 \end{document}
 
