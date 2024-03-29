@@ -791,9 +791,31 @@ Importance Sampling:
 (4) DPG: 
 \begin{align*}
     \mu (s; \theta) &= a \\[3pt]
-    J(\theta) &= E_{s \sim d} [ v_{\mu}(S) ] 
-               = \sum_{s \in d} d(s) v_{\mu}(s) 
-               = d^{T} \cdot v_{\mu} \\[3pt]
+    J(\theta) &= E_{S \sim d_{\mu}} [ v_{\mu}(S) ] 
+               = \sum_{S \sim d_{\mu}} d_{\mu}(s) v_{\mu}(s) 
+               = d_{\mu}^{T} \cdot v_{\mu} \\[3pt]
+    \nabla_{\theta} J(\theta) &= 
+            \sum_{S \sim d_{\mu}} d_{\mu}(s) 
+            \nabla_{\theta} \mu (s; \theta) 
+            \left( \nabla_{a} q_{\mu}(s, a) \right) |_{a=\mu(s)} 
+            \qquad \qquad \qquad \qquad proof. \\[3pt]
+            &= 
+            E_{S \sim d_{\mu}} \left[ 
+                \nabla_{\theta} \mu (S; \theta) 
+                \left( \nabla_{a} q_{\mu}(S, a) \right) |_{a=\mu(S)} 
+            \right] \\[3pt]
+    \delta_{t} & 
+            \quad = \quad 
+            r_{t+1} + \gamma q(s_{t+1}, \mu(s_{t+1}; \theta_{t}); w_{t}) 
+            - q(s_{t}, a_{t}; w_{t}) \\[3pt]
+    w_{t+1} & 
+            \quad = \quad w_{t} + \alpha_{w} \delta_{t} 
+            \nabla_{w} q(s_{t}, a_{t}; w_{t}) \\[3pt]
+    \theta_{t+1} & 
+            \quad = \quad \theta_{t} + \alpha_{\theta} \nabla_{\theta} 
+            \mu(s_{t}, \theta_{t}) \left(
+                \nabla_{a}q(s_{t}, a; w_{t+1}) 
+            \right) |_{a=\mu(s_{t})} 
 \end{align*}
 
 
