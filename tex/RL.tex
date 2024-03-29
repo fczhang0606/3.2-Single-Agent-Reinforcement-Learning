@@ -761,7 +761,7 @@ Importance Sampling:
                    &= \int_{x} q(x) \frac{p(x)}{q(x)} f(x) \,dx \\[3pt]
                    &= E_{x-q} \left[ \frac{p(x)}{q(x)} f(x) \right] 
                    \qquad \qquad \qquad \qquad 
-                   \beta(x) = \frac{p(x)}{q(x)} = \frac{\pi(x)}{\mu(x)} 
+                   \beta(x) = \frac{p(x)}{q(x)} = \frac{\pi(x)}{b(x)} 
 \end{align*}
 
 
@@ -778,12 +778,22 @@ Importance Sampling:
             - \tilde{v}(s_{t}; w_{t}) \\[3pt]
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{w} 
-            \frac{ \pi (a_{t} | s_{t}; \theta_{t}) }{ \mu (a_{t} | s_{t}) } \delta_{t} 
+            \frac{ \pi (a_{t} | s_{t}; \theta_{t}) }{ b (a_{t} | s_{t}) } \delta_{t} 
             \nabla_{w} \tilde{v}(s_{t}; w_{t}) \\[3pt]
     \theta_{t+1} & 
             \quad = \quad \theta_{t} + \alpha_{\theta} \nabla_{\theta} 
             ln \pi (a_{t} | s_{t}; \theta_{t}) 
-            \frac{ \pi (a_{t} | s_{t}; \theta_{t}) }{ \mu (a_{t} | s_{t}) } \delta_{t} 
+            \frac{ \pi (a_{t} | s_{t}; \theta_{t}) }{ b (a_{t} | s_{t}) } \delta_{t} 
+\end{align*}
+
+
+~ \\[3pt]
+(4) DPG: 
+\begin{align*}
+    \mu (s; \theta) &= a \\[3pt]
+    J(\theta) &= E_{s \sim d} [ v_{\mu}(S) ] 
+               = \sum_{s \in d} d(s) v_{\mu}(s) 
+               = d^{T} \cdot v_{\mu} \\[3pt]
 \end{align*}
 
 
