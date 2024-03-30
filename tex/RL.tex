@@ -33,42 +33,40 @@
 
     ~ \\[3pt]
     策略与价值：\\[3pt]
-    ①reward、return、value，用来评估一个策略的好坏。 \\[3pt]
-    策略与价值一一对应。 \\[3pt]
-    ②价值比较，策略比较，策略改进定理。 \\[3pt]
+    ①reward、return、value。 \\[3pt]
+    策略与价值一一对应，价值用来评估一个策略的好坏。 \\[3pt]
+    ②价值比较，即策略比较，引出策略改进定理。 \\[3pt]
     ③强化学习的终极目标，求取最优策略， \\[3pt]
     最优策略不唯一，最优价值唯一。 \\[3pt]
     最优动作价值，意味着选取这个动作，未来回报的期望最大。 \\[3pt]
-    ④r线性变换，V+Q线性变换，改变最优价值，不改变greedy最优策略。 \\[3pt]
+    ④奖励r线性变换，V+Q跟随线性变换，改变了最优价值，不一定改变greedy最优策略。 \\[3pt]
     ⑤迭代时，最优策略可能已经稳定了，但是对应的最优价值还没稳定。 \\[3pt]
-    ⑥从终止状态反向迭代更新价值，速度更快。但是哪里是终止状态？上帝视角。 \\[3pt]
+    ⑥从终止状态反向迭代，更新价值，速度更快。但是哪里是终止状态？上帝视角了。 \\[3pt]
 \end{CJK}
 
 
 % 模型p
 \begin{align*}
-    p \left( s^{\prime}, r | s, a \right) 
-    = \operatorname{Pr} \left\{ S_{t}=s^{\prime}, R_{t}=r | 
-    S_{t-1}=s, A_{t-1}=a \right\} 
+    p ( s^{\prime}, r | s, a ) 
+    = Pr { S_{t}=s^{\prime}, R_{t}=r | S_{t-1}=s, A_{t-1}=a } 
 \end{align*}
 
 % 模型p=1
 \begin{align*}
     \sum_{s^{\prime} \in S} \sum_{r \in R} 
-    p \left( s^{\prime}, r | s, a \right) = 1 
+    p ( s^{\prime}, r | s, a ) = 1 
 \end{align*}
 
 % 模型p-s'
 \begin{align*}
-    p \left( s^{\prime} | s, a \right) 
-    = \sum_{r \in R} p \left( s^{\prime}, r | s, a \right) 
+    p ( s^{\prime} | s, a ) 
+    = \sum_{r \in R} p ( s^{\prime}, r | s, a ) 
 \end{align*}
 
 % 奖励r
 \begin{align*}
-    r(s, a) = \sum_{s^{\prime} \in S} 
-    \sum_{r \in R} 
-    \left( p \left( s^{\prime}, r | s, a \right) * r \right) 
+    r(s, a) = \sum_{s^{\prime} \in S} \sum_{r \in R} 
+    ( p ( s^{\prime}, r | s, a ) * r ) 
 \end{align*}
 
 
@@ -88,61 +86,48 @@
 % v
 \begin{align*}
     v_{\pi}(s) 
-      &= E_{\pi} \left[ G_{t} | S_{t}=s \right] 
+      &= E_{\pi} [ G_{t} | S_{t}=s ] 
          \qquad \qquad \qquad \qquad \qquad \qquad (Definition) \\[3pt]
-      &= E_{\pi} \left[ R_{t+1} + \gamma G_{t+1} | S_{t}=s \right] 
+      &= E_{\pi} [ R_{t+1} + \gamma G_{t+1} | S_{t}=s ] 
          \qquad \qquad \qquad \qquad (TD-0) \\[3pt]
-      &= E_{\pi} \left[ R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... 
-         | S_{t}=s \right] 
-         \quad (TD-n)(TD-\Join =MC) \\[3pt]
-      &= \sum_{a \in A} \pi(a | s) 
-         \sum_{s^{\prime}, r} 
-         p \left( s^{\prime}, r | s, a \right) * 
-         \left[ r + \gamma E_{\pi} 
-         \left[ G_{t+1} | S_{t+1}=s^{\prime} \right] \right] \\[3pt]
-      &= \sum_{a \in A} \pi(a | s) 
-         \sum_{s^{\prime}, r} 
-         p \left( s^{\prime}, r | s, a \right) * 
-         \left[ r + \gamma 
-         v_{\pi} \left( s^{\prime} \right) \right] 
-         \qquad (BEs) \\[3pt]
-      &= \sum_{a \in A} 
-         \pi(a | s) * q_{\pi}(s, a) \\[3pt]
+      &= E_{\pi} [ R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... | S_{t}=s ] 
+         \quad (TD-n)(TD-\Join = MC) \\[3pt]
+      &= \sum_{a \in A} \pi(a | s) \sum_{s^{\prime}, r} 
+         p ( s^{\prime}, r | s, a ) * 
+         [ r + \gamma E_{\pi} [ G_{t+1} | S_{t+1}=s^{\prime} ] ] \\[3pt]
+      &= \sum_{a \in A} \pi(a | s) \sum_{s^{\prime}, r} 
+         p ( s^{\prime}, r | s, a ) * 
+         [ r + \gamma v_{\pi} ( s^{\prime} ) ] \qquad (BEs) \\[3pt]
+      &= \sum_{a \in A} \pi(a | s) * q_{\pi}(s, a) \\[3pt]
 \end{align*}
 
 % q
 \begin{align*}
     q_{\pi}(s, a) 
-      &= E_{\pi} \left[ G_{t} | S_{t}=s, A_{t}=a \right] 
+      &= E_{\pi} [ G_{t} | S_{t}=s, A_{t}=a ] 
       \qquad \qquad \qquad \qquad \qquad \qquad (Definition) \\[3pt]
-      &= E_{\pi} \left[ R_{t+1} + \gamma G_{t+1} 
-         | S_{t}=s, A_{t}=a \right] 
+      &= E_{\pi} [ R_{t+1} + \gamma G_{t+1} | S_{t}=s, A_{t}=a ] 
          \qquad \qquad \qquad \qquad (TD-0) \\[3pt]
-      &= E_{\pi} \left[ R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... 
-         | S_{t}=s, A_{t}=a \right] 
-         \quad (TD-n)(TD-\Join =MC) \\[3pt]
+      &= E_{\pi} [ R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... | S_{t}=s, A_{t}=a ] 
+         \quad (TD-n)(TD-\Join = MC) \\[3pt]
       &= \sum_{s^{\prime}, r} 
-         p \left( s^{\prime}, r | s, a \right) * 
-         \left[ r + \gamma E_{\pi} 
-         \left[ G_{t+1} | S_{t+1}=s^{\prime} \right] \right] \\[3pt]
+         p ( s^{\prime}, r | s, a ) * 
+         [ r + \gamma E_{\pi} [ G_{t+1} | S_{t+1}=s^{\prime} ] ] \\[3pt]
       &= \sum_{s^{\prime}, r} 
-         p \left( s^{\prime}, r | s, a \right) * 
-         \left[ r + \gamma 
-         v_{\pi} \left( s^{\prime} \right) \right] \\[3pt]
+         p ( s^{\prime}, r | s, a ) * 
+         [ r + \gamma v_{\pi} ( s^{\prime} ) ] \\[3pt]
       &= \sum_{s^{\prime}, r} 
-         p \left( s^{\prime}, r | s, a \right) * 
-         \left[ r + \gamma 
-         \sum_{a^{\prime} \in A} 
-         \pi ! \left( a^{\prime} | s^{\prime} \right) * 
-         q_{\pi} \left( s^{\prime}, a^{\prime} \right) \right] 
-         \quad (BEs) \\[3pt]
+         p ( s^{\prime}, r | s, a ) * 
+         [ r + \gamma \sum_{a^{\prime} \in A} 
+         \pi ! ( a^{\prime} | s^{\prime} ) * q_{\pi} ( s^{\prime}, a^{\prime} ) ] 
+         \quad \quad (BEs) \\[3pt]
 \end{align*}
 
 
 \newpage
 
 
-policy-comparison: 
+Policy-Comparison: 
 \begin{align*}
     \pi^{\prime} \geq \pi 
     \quad \leftarrow \rightarrow \quad 
@@ -152,12 +137,12 @@ policy-comparison:
 \\[3pt]
 
 
-policy-improvement: 
+Policy-Improvement: 
 \begin{align*}
     E_{\pi^{\prime}} 
-    \left[ q_{\pi} \left( s, \pi^{\prime}(s) \right) \right] 
+    [ q_{\pi} ( s, \pi^{\prime}(s) ) ] 
     \geq v_{\pi}(s) 
-    = E_{\pi} \left[ q_{\pi} \left( s, \pi(s) \right) \right] 
+    = E_{\pi} [ q_{\pi} ( s, \pi(s) ) ] 
     \qquad \forall s \in S 
 \end{align*}
 \\[3pt]
@@ -168,7 +153,7 @@ Bellman Optimal Equations:
     v_{*}(s) 
     & = \max_{\pi} v_{\pi}(s) 
         \qquad \qquad \qquad (Definition) \\[3pt]
-    & = \max_{\pi} \left( r_{\pi} + \gamma P_{\pi} v \right) 
+    & = \max_{\pi} ( r_{\pi} + \gamma P_{\pi} v ) 
         \qquad \qquad (BOEs) \\[3pt]
     & = \max_{a \in A} q_{\pi *}(s, a) 
         \qquad \forall s \in S \\[3pt]
@@ -179,8 +164,8 @@ Bellman Optimal Equations:
 ~ \\[3pt]
 % 收缩映射定理
 \begin{CJK}{UTF8}{gbsn}
-    Contraction Mapping Theorem (迭代收敛至唯一不动点) \\[3pt]
-    贝尔曼最优方程的收缩迭代过程，即是value iteration算法 \\[3pt]
+    Contraction Mapping Theorem (迭代收敛至，唯一的不动点) \\[3pt]
+    贝尔曼最优方程的迭代收缩过程，即是value iteration算法 \\[3pt]
 \end{CJK}
 
 
@@ -201,7 +186,7 @@ Bellman Optimal Equations:
 ~ \\[3pt]
 (1) Policy Iteration: 
 ~ \\[3pt]
-Policy Evaluation: 
+Policy Evaluation: (Matrix) 
 \begin{align*}
     v_{\pi_{k}} = r_{\pi_{k}} + \gamma P_{\pi_{k}} v_{\pi_{k}} 
 \end{align*}
@@ -233,7 +218,8 @@ Value Update:
 ~ \\[3pt]
 (3) Turncated Iteration: \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
-    值迭代有限次数（介于1次与无穷次之间）；值也未稳定，就进行策略改进 \\[3pt]
+    值迭代有限次数（介于1次与无穷次之间）； \\[3pt]
+    值也未稳定，就进行策略改进。 \\[3pt]
 \end{CJK}
 
 
@@ -246,15 +232,11 @@ Value Update:
 Sample: 
 \begin{align*}
     v_{\pi}(s) 
-      &= E_{\pi} \left[ 
-         G_{t} = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... 
-         | S_{t}=s \right] 
-         \qquad \qquad \quad (TD-\Join =MC) \\[3pt]
+      &= E_{\pi} [ G_{t} = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... | S_{t}=s ] 
+         \qquad \qquad \quad (TD-\Join = MC) \\[3pt]
     q_{\pi}(s, a) 
-      &= E_{\pi} \left[ 
-         G_{t} = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... 
-         | S_{t}=s, A_{t}=a \right] 
-         \qquad (TD-\Join =MC) \\[3pt]
+      &= E_{\pi} [ G_{t} = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... | S_{t}=s, A_{t}=a ] 
+         \qquad (TD-\Join = MC) \\[3pt]
 \end{align*}
 
 
@@ -262,11 +244,11 @@ Sample:
 \begin{CJK}{UTF8}{gbsn}
     理解： \\[3pt]
     Model-free. Dynamics with Trajectory. \\[3pt]
-    ①采样进行估计，依据概率论的大数定理。 \\[3pt]
-    ②episode长度（探索半径是否覆盖终点？）对估值影响，最优价值是否反向传播。 \\[3pt]
+    ①采样进行估计，是依据概率论的大数定理。 \\[3pt]
+    ②episode长度（探索半径是否覆盖有价值的终点？）对估值影响，最优价值是否反向传播。 \\[3pt]
     ③估计的更新方式，非增长式（等着一起算）和增长式（来一个算一个）。 \\[3pt]
     ④epsilon关乎采样策略的探索性和最优性， \\[3pt]
-    大则探索性强、最优性弱，小则探索性弱、最优性强， \\[3pt]
+    e大则探索性强、最优性弱，e小则探索性弱、最优性强， \\[3pt]
     ⑤如果epsilon大到一定程度，可能会导致epsilon-greedy与最优greedy不一致。 \\[3pt]
 \end{CJK}
 
@@ -275,9 +257,9 @@ Sample:
 (1) MC-Basic 
 ~ \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
-    二次循环，遍历所有(s, a)；某个策略下，每对采足够样，非增长式估计相应Q。 \\[3pt]
+    二次循环，遍历所有(s, a)；在某个策略下，每对足够采样，非增长式估计相应Q值。 \\[3pt]
     策略相应的，一套稳定Q值下，策略改进。 \\[3pt]
-    迭代。 \\[3pt]
+    迭代之。 \\[3pt]
 \end{CJK}
 
 
@@ -286,9 +268,9 @@ Sample:
 ~ \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
     起始分布，覆盖(s, a)全集。 \\[3pt]
-    Pi下，充分利用每一个trajectory里的所有(s, a)对，访问，增长式估计相应Q。 \\[3pt]
-    每一个trajectory结束后，Q值未必稳定，都进行策略改进。 \\[3pt]
-    迭代。 \\[3pt]
+    Pi下，充分利用每一个trajectory里的所有(s, a)对，访问，增长式估计相应Q值。 \\[3pt]
+    每一个trajectory结束后，Q值未必稳定，就进行策略改进。 \\[3pt]
+    迭代之。 \\[3pt]
 \end{CJK}
 
 
@@ -296,11 +278,11 @@ Sample:
 (3) MC-epsilon-greedy 
 ~ \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
-    过程分布，覆盖(s, a)全集。 \\[3pt]
+    过程分布，覆盖(s, a)全集，通过策略的stochastic实现。 \\[3pt]
     e-Pi下，充分利用每一个trajectory里的所有(s, a)对，
-    访问，增长式估计相应Q。 \\[3pt]
-    每一个trajectory结束后，Q值未必稳定，都进行策略改进，生成e-Pi。 \\[3pt]
-    迭代。 \\[3pt]
+    访问，增长式估计相应Q值。 \\[3pt]
+    每一个trajectory结束后，Q值未必稳定，就进行策略改进，生成e-Pi。 \\[3pt]
+    迭代之。 \\[3pt]
 \end{CJK}
 
 
@@ -322,9 +304,9 @@ Sample:
     w_{k}   &= \frac {1} {k} \sum_{i=1}^{k} x_{i} 
             \qquad \qquad \qquad \qquad 
     w_{k-1}  = \frac {1} {k-1} \sum_{i=1}^{k-1} x_{i} \\[3pt]
-    w_{k}   &= \frac {1} {k} \left[ (k-1)w_{k-1} + x_{k} \right] 
+    w_{k}   &= \frac {1} {k} [ (k-1)w_{k-1} + x_{k} ] 
             \quad = w_{k-1} + \frac {1} {k} 
-            \left[ x_{k} - w_{k-1} \right] 
+            [ x_{k} - w_{k-1} ] 
 \end{align*}
 
 
@@ -335,14 +317,13 @@ Sample:
     & = 0 \qquad (\text{g is unknown, w is input, 0 is output}) \\[3pt]
     & g(w) = \nabla_{w} L(w) = 0 \quad (\text{w is parametres}) \\[3pt]
     & g(w) = L(w) - C = 0 \\[3pt]
-    & \qquad \text{w* is the solution (Convergence Condition)}
+    & \qquad \text{w* is the solution (Convergence Condition)} 
 \end{align*}
 \begin{align*}
-    w_{k+1} &= w_{k} + a_{k} \left[ 
-            \tilde{g} \left( w_{k}, \eta_{k} \right) - 0 \right] \\[3pt]
-            &= w_{k} + a_{k} 
-            \left( g(w_{k}) + \eta_{k} \right) \\[3pt]
-            & \qquad iteration: \quad 
+    w_{k+1} &= w_{k} + a_{k} [ \tilde{g} ( w_{k}, \eta_{k} ) - 0 ] 
+            \qquad \qquad \text{error} \\[3pt]
+            &= w_{k} + a_{k} ( g(w_{k}) + \eta_{k} ) \\[3pt]
+            & \qquad iteration: \qquad 
             \{w_{k}\} + \{\tilde{g}_{k}\} + \{a_{k}\} 
 \end{align*}
 
@@ -350,9 +331,9 @@ Sample:
 ~ \\[3pt]
 (3) Optimazation: 
 \begin{align*}
-    & \min_{w} J(w) = E \left[ f(w, X) \right] \\[3pt]
+    & \min_{w} J(w) = E [ f(w, X) ] \\[3pt]
     & \qquad \Rightarrow \Rightarrow \qquad 
-    \nabla_{w} E \left[ f(w, X) \right] = 0 \\[3pt]
+    \nabla_{w} E [ f(w, X) ] = 0 \\[3pt]
     & \qquad \Rightarrow \Rightarrow \qquad 
     Gradient: \quad InputSpace, \quad direction + magnitude 
 \end{align*}
@@ -363,9 +344,9 @@ GD \quad + \quad (Mini)Batch GD \quad + \quad Stochastic GD:
 \begin{align*}
     w_{k+1} & 
             \quad = \quad w_{k} - \alpha_{k} 
-            \nabla_{w} E \left[ f(w_{k}, X) \right] 
+            \nabla_{w} E [ f(w_{k}, X) ] 
             \quad = \quad w_{k} - \alpha_{k} 
-            E \left[ \nabla_{w} f(w_{k}, X) \right] \\[3pt]
+            E [ \nabla_{w} f(w_{k}, X) ] \\[3pt]
     w_{k+1} & 
             \quad = \quad w_{k} - \alpha_{k} 
             \frac {1} {n} \sum_{i=1}^{n} 
@@ -385,7 +366,7 @@ GD \quad + \quad (Mini)Batch GD \quad + \quad Stochastic GD:
 \begin{CJK}{UTF8}{gbsn}
     理解: \\[5pt]
     Model-free. Dynamics with Transition. \\[5pt]
-    ①TD时序差分：在不同时刻，对同一个量估计，有差，利用差改进估计。 \\[5pt]
+    ①TD时序差分：在不同时刻，对同一个量的估计，有差，利用差改进估计。 \\[5pt]
     ②没有模型p、只有数据t，进行估计： \\[5pt]
     MC利用整条trajectory，估计V、Q，离线/无偏/大方差； \\[5pt]
     TD利用片段transition，估计V、Q，在线/有偏/小方差。 \\[5pt]
@@ -395,24 +376,47 @@ GD \quad + \quad (Mini)Batch GD \quad + \quad Stochastic GD:
     目标策略的估计值趋向TD-target，即TD-target代表着目标策略。 \\[5pt]
     ⑥on-policy: 用一个策略和环境交互，得到experience， 
     估计这个策略，改进这个策略。 \\[5pt]
-    再用改进的策略循环，交互、估计、改进，直至最优（这个系列的最优）。 \\[5pt]
+    再用改进的策略进行循环，交互、估计、改进，直至最优（这个系列的最优）。 \\[5pt]
     off-policy: 一个策略和环境交互，得到experience， \\[5pt]
     另一个策略被估计、被改进。（目标策略不易采集数据，所以需要行为策略，异轨） \\[5pt]
-    experience应当具有一些性质，能够架通两个策略， \\[5pt]
+    experience应当具有一些性质，能够架通两个策略： \\[5pt]
     行为策略能够采到，目标策略能够使用。 \\[5pt]
 \end{CJK}
+
+
+~ \\[18pt]
+\centering
+*Temporal Difference: \\[3pt]
+~ \\[3pt]
+\begin{tabular}{cccc}  % centering 
+
+    \toprule 
+        time    & model     & s             & s'                \\[3pt]
+    \midrule 
+        t       & w(t)      & v(s; w(t))    & v(s'; w(t))       \\[3pt]
+        t+1     & w(t+1)    & r+v(s'; w(t)) &                   \\[3pt]
+        t       & w(t)      & q(s, a; w(t)) & q(s', a'; w(t))   \\[3pt]
+        t+1     & w(t+1)    & r+q(s', a'; w(t)) &               \\[3pt]
+        t       & w(t)      & q(s, a; w(t)) & max(q(s', A))     \\[3pt]
+        t+1     & w(t+1)    & r+max(q(s', A))   &               \\[3pt]
+    \bottomrule 
+
+\end{tabular}
+\flushleft
+
+
+\newpage
 
 
 ~ \\[3pt]
 (1) TD-V: \qquad s-a-r-s 
 \begin{align*}
     v_{t+1} (s_{t}) &= v_{t} (s_{t}) + \alpha_{t} 
-        [ [r_{t+1} + \gamma v_{t} (s_{t+1})] - v_{t} (s_{t}) ] \\[3pt]
+        [ [ r_{t+1} + \gamma v_{t} (s_{t+1}) ] - v_{t} (s_{t}) ] \\[3pt]
     v_{t+1} (s)     &= v_{t} (s) 
     \qquad \forall s \neq s_{t} \\[3pt]
 \end{align*}
 
-\newpage
 
 ~ \\[3pt]
 (2) TD-Q: \qquad SA-R-SA 
@@ -431,7 +435,7 @@ Policy Evaluation:
 ~ \\[3pt]
 Policy Improvement: \\[3pt]
 \begin{CJK}{UTF8}{gbsn}
-    某个策略下的Q值可能还未估计稳定， \\[3pt]
+    某个策略下的Q值，可能还未估计稳定， \\[3pt]
     就可以进行策略提升。最终目标提升至Q*。 \\[3pt]
 \end{CJK}
 
@@ -451,11 +455,11 @@ Value Improvement:
 \end{align*}
 
 
-~ \\[96pt]
+~ \\[48pt]
+\centering
 *(DP+MC+TD)-Summary: \\[3pt]
 ~ \\[3pt]
-\centering
-\begin{tabular}{ccc}  % centering*3 
+\begin{tabular}{ccc}  % centering 
 
     \toprule 
         value & DP-model(p)                 & TD-data(t)  \\[3pt]
@@ -482,11 +486,11 @@ Value Improvement:
     原因在于，函数这种表达形式，存储了更本质的信息。 \\[3pt]
     函数拟合的劣势：存在精度损失。 \\[3pt]
     函数拟合的关键：最优的结构 + 最优的参数，提升拟合准确程度。 \\[3pt]
-    ②状态分布(.)：平均分布U、稳态分布D（D + (pi+p) = D）。 \\[3pt]
+    ②状态分布(.)：平均分布U、稳态分布D（d + (pi+p) = d）。 \\[3pt]
     优化时，SGD将不同分布吸收拉平了。 \\[3pt]
-    ③某个真实分布中的一系列真值，形成一个超面； \\[3pt]
+    ③某个真实分布中，函数的一系列真值，形成一个超面； \\[3pt]
     经过各种采样，得到超面的部分观测真值； \\[3pt]
-    建立一个模型并优化参数，用来拟合部分观测真值得到的超面。 \\[3pt]
+    建立一个模型，并优化参数，用来拟合未完全观测到的超面。 \\[3pt]
     ④自举，让不均匀的高低估扩展，可能导致最优性发生变化。 \\[3pt]
 \end{CJK}
 
@@ -494,8 +498,8 @@ Value Improvement:
 ~ \\[3pt]
 (1) Objective Function: 
 \begin{align*}
-    J(w) = E_{S \sim (.)} 
-           [ (v_{\pi}(S) - \tilde{v}(S, w) )^2 ] 
+    L(w) = E_{S \sim (.)} 
+           [ ( v_{\pi}(S) - \tilde{v}(S; w) )^2 ] 
 \end{align*}
 
 ~ \\[3pt]
@@ -503,10 +507,10 @@ Value Improvement:
 \begin{align*}
     w_{k+1} & 
             \quad = \quad w_{k} - \alpha_{k} 
-            \nabla_{w} J(w_{k}) \\[3pt]
+            \nabla_{w} L(w_{k}) \\[3pt]
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{t} 
-            (v_{\pi}(s_{t}) - \tilde{v}(s_{t}; w_{t})) 
+            ( v_{\pi}(s_{t}) - \tilde{v}(s_{t}; w_{t}) ) 
             \nabla_{w} \tilde{v}(s_{t}; w_{t}) 
 \end{align*}
 
@@ -515,19 +519,19 @@ Value Improvement:
 \begin{align*}
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{t} 
-            (g_{t} - \tilde{v}(s_{t}; w_{t})) 
+            ( g_{t} - \tilde{v}(s_{t}; w_{t}) ) 
             \nabla_{w} \tilde{v}(s_{t}; w_{t}) 
             \qquad \qquad \qquad \qquad \quad MC+VA \\[3pt]
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{t} 
-            [r_{t+1} + \gamma \tilde{v}(s_{t+1}; w_{t}) 
-            - \tilde{v}(s_{t}; w_{t})] 
+            [ r_{t+1} + \gamma \tilde{v}(s_{t+1}; w_{t}) 
+            - \tilde{v}(s_{t}; w_{t}) ] 
             \nabla_{w} \tilde{v}(s_{t}; w_{t}) 
             \qquad TD+VA 
 \end{align*}
 
 ~ \\[3pt]
-(4) Approximator: 
+(4) Approximator(w): 
 \begin{align*}
     linear    &= kx + b \\[3pt]
     nonlinear &= neural \ \ network \\[3pt]
@@ -554,11 +558,7 @@ Value Update(w):
 Policy Improvement: epsilon-greedy
 
 
-~ \\[3pt]
-~ \\[3pt]
-~ \\[3pt]
-~ \\[3pt]
-~ \\[3pt]
+~ \\[48pt]
 (6) Q*-Learning + VA: \qquad (S-A-R-S + q- + w) 
 
 ~ \\[3pt]
@@ -575,13 +575,9 @@ Value Update(w):
 Policy Improvement: (epsilon-)greedy 
 
 
-~ \\[3pt]
-~ \\[3pt]
-~ \\[3pt]
-~ \\[3pt]
-~ \\[3pt]
+~ \\[48pt]
 (7) Deep Q*-Learning: \qquad (Buffer(S-A-R-S) + NN(w)*2) \\[3pt]
-\quad (continuous states + discrete actions)
+\qquad (continuous states + discrete actions)
 
 ~ \\[3pt]
 Value Update(w): 
@@ -597,11 +593,7 @@ Value Update(w):
 Policy Improvement: (epsilon-)greedy 
 
 
-~ \\[3pt]
-~ \\[3pt]
-~ \\[3pt]
-~ \\[3pt]
-~ \\[3pt]
+~ \\[48pt]
 (8) Double Q*-Net: \qquad (Buffer(S-A-R-S) + NN(w)*2) 
 
 
