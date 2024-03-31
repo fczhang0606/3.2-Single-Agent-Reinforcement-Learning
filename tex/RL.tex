@@ -549,9 +549,9 @@ Value Update(w):
 \begin{align*}
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{t} 
-            [ r_{t+1} + \gamma \tilde{q}(s_{t+1}, a_{t+1}; w_{t}) 
-            - \tilde{q}(s_{t}, a_{t}; w_{t}) ] 
-            \nabla_{w} \tilde{q}(s_{t}, a_{t}; w_{t}) 
+            [ r_{t+1} + \gamma q(s_{t+1}, a_{t+1}; w_{t}) 
+            - q(s_{t}, a_{t}; w_{t}) ] 
+            \nabla_{w} q(s_{t}, a_{t}; w_{t}) 
 \end{align*}
 
 ~ \\[3pt]
@@ -566,9 +566,9 @@ Value Update(w):
 \begin{align*}
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{t} 
-            [ r_{t+1} + \gamma \max_{a} \tilde{q}(s_{t+1}, a; w_{t}) 
-            - \tilde{q}(s_{t}, a_{t}; w_{t}) ] 
-            \nabla_{w} \tilde{q}(s_{t}, a_{t}; w_{t}) 
+            [ r_{t+1} + \gamma \max_{a} q(s_{t+1}, a; w_{t}) 
+            - q(s_{t}, a_{t}; w_{t}) ] 
+            \nabla_{w} q(s_{t}, a_{t}; w_{t}) 
 \end{align*}
 
 ~ \\[3pt]
@@ -584,9 +584,9 @@ Value Update(w):
 \begin{align*}
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{t} 
-            [ r_{t+1} + \gamma \max_{a} \tilde{q}(s_{t+1}, a; w_{T}) 
-            - \tilde{q}(s_{t}, a_{t}; w_{t}) ] 
-            \nabla_{w} \tilde{q}(s_{t}, a_{t}; w_{t}) 
+            [ r_{t+1} + \gamma \max_{a} q(s_{t+1}, a; w_{T}) 
+            - q(s_{t}, a_{t}; w_{t}) ] 
+            \nabla_{w} q(s_{t}, a_{t}; w_{t}) 
 \end{align*}
 
 ~ \\[3pt]
@@ -603,17 +603,17 @@ Policy Improvement: (epsilon-)greedy
 
 
 ~ \\[3pt]
+\centering
 *Policy-Summary: \\[3pt]
 ~ \\[3pt]
-\centering
-\begin{tabular}{ccc}  % centering*3 
+\begin{tabular}{ccc}  % centering 
 
     \toprule 
         & \qquad \qquad \qquad \qquad \qquad \qquad \qquad Policy & \\[3pt]
     \midrule 
-        Form          & Distribution        & Network Model         \\[3pt]
+        Form          & Distribution        & Network Model (Continuous A ?) \\[3pt]
         Evaluation    & Values (V + Q)      & Performence Metrics   \\[3pt]
-        Optimazation  & (epsilon)-greedy    & Gradient-Descent      \\[3pt]
+        Optimazation  & (epsilon)-greedy    & Gradient-Ascent      \\[3pt]
     \bottomrule 
 
 \end{tabular}
@@ -653,7 +653,7 @@ Policy Improvement: (epsilon-)greedy
 (4)Metric-1: average state value (?) = average average return 
 \begin{align*}
     J_{1} (\theta) & \ = \ \overline{v_{\pi}} 
-                     \ = \ E_{s \sim d} [ v_{\pi}(S) ] 
+                     \ = \ E_{S \sim d} [ v_{\pi}(S) ] 
                      \ = \ \sum_{s \in d} d(s) v_{\pi}(s) 
                      \ = \ d^{T} \cdot v_{\pi} \\[3pt]
                    & \ = \ E \left[ \sum_{t = 0}^{\infty} 
@@ -664,7 +664,7 @@ Policy Improvement: (epsilon-)greedy
 (5)Metric-2: average one-step reward = average infinite reward 
 \begin{align*}
     J_{2} (\theta) & \ = \ \overline{r_{\pi}} 
-                     \ = \ E_{s \sim d} [ r_{\pi}(S) ] 
+                     \ = \ E_{S \sim d} [ r_{\pi}(S) ] 
                      \ = \ \sum_{s \in d} d(s) r_{\pi}(s) \\[3pt]
                    & \ = \ \lim_{n \to \infty} \frac{1}{n} 
                      E \left[ \sum_{k = 1}^{n} R_{t+k} \right] 
@@ -681,8 +681,8 @@ Policy Improvement: (epsilon-)greedy
 \begin{align*}
     \nabla_{\theta} J(\theta) &= \sum_{s \in S} \eta (s) 
     \sum_{a \in A} \nabla_{\theta} \pi (a | s; \theta) q_{\pi} (s, a) 
-    \qquad \qquad \qquad \text{proof. Zhang Weinan} \\[3pt]
-    &= E \left[ \nabla_{\theta} ln \pi (A | S; \theta) q_{\pi} (S, A) \right] 
+    \qquad \qquad \qquad \text{proof.} \\[3pt]
+    &= E [ \nabla_{\theta} ln \pi (A | S; \theta) q_{\pi} (S, A) ] 
     \qquad \qquad \qquad \qquad 
     \text{q: (1)MC   (2)MC-BS   (3)Advantage   (4)TD} \\[3pt]
     \theta_{t+1} &= \theta_{t} + \alpha \nabla_{\theta} 
@@ -717,12 +717,12 @@ Policy Improvement: (epsilon-)greedy
 \begin{align*}
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{w} 
-            [ r_{t+1} + \gamma \tilde{q}(s_{t+1}, a_{t+1}; w_{t}) 
-            - \tilde{q}(s_{t}, a_{t}; w_{t}) ] 
-            \nabla_{w} \tilde{q}(s_{t}, a_{t}; w_{t}) \\[3pt]
+            [ r_{t+1} + \gamma q(s_{t+1}, a_{t+1}; w_{t}) 
+            - q(s_{t}, a_{t}; w_{t}) ] 
+            \nabla_{w} q(s_{t}, a_{t}; w_{t}) \\[3pt]
     \theta_{t+1} & 
             \quad = \quad \theta_{t} + \alpha_{\theta} \nabla_{\theta} 
-            ln \pi (a_{t} | s_{t}; \theta_{t}) \tilde{q}(s_{t}, a_{t}; w_{t+1}) 
+            ln \pi (a_{t} | s_{t}; \theta_{t}) q(s_{t}, a_{t}; w_{t+1}) 
 \end{align*}
 
 
@@ -731,15 +731,15 @@ Policy Improvement: (epsilon-)greedy
 \begin{align*}
     q_{\pi}(s_{t}, a_{t}) - BS & 
             \quad = \quad 
-            \tilde{q}(s_{t}, a_{t}; w_{t}^{'}) 
-            - \tilde{v}(s_{t}; w_{t}) \\[3pt]
+            q_{\pi}(s_{t}, a_{t}; w_{t}^{'}) 
+            - v_{\pi}(s_{t}; w_{t}) \\[3pt]
     = \delta_{t} & 
             \quad = \quad 
-            r_{t+1} + \gamma \tilde{v}(s_{t+1}; w_{t}) 
-            - \tilde{v}(s_{t}; w_{t}) \\[3pt]
+            r_{t+1} + \gamma v(s_{t+1}; w_{t}) 
+            - v(s_{t}; w_{t}) \\[3pt]
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{w} \delta_{t} 
-            \nabla_{w} \tilde{v}(s_{t}; w_{t}) \\[3pt]
+            \nabla_{w} v(s_{t}; w_{t}) \\[3pt]
     \theta_{t+1} & 
             \quad = \quad \theta_{t} + \alpha_{\theta} \nabla_{\theta} 
             ln \pi (a_{t} | s_{t}; \theta_{t}) \delta_{t} 
@@ -749,11 +749,11 @@ Policy Improvement: (epsilon-)greedy
 ~ \\[3pt]
 Importance Sampling: 
 \begin{align*}
-    E_{x-p} [f(x)] &= \int_{x} p(x) f(x) \,dx \\[3pt]
-                   &= \int_{x} q(x) \frac{p(x)}{q(x)} f(x) \,dx \\[3pt]
-                   &= E_{x-q} \left[ \frac{p(x)}{q(x)} f(x) \right] 
-                   \qquad \qquad \qquad \qquad 
-                   \beta(x) = \frac{p(x)}{q(x)} = \frac{\pi(x)}{b(x)} 
+    E_{x \sim p} [f(x)] &= \int_{x} p(x) f(x) \,dx \\[3pt]
+                        &= \int_{x} q(x) \frac{p(x)}{q(x)} f(x) \,dx \\[3pt]
+                        &= E_{x \sim q} \left[ \frac{p(x)}{q(x)} f(x) \right] 
+                        \qquad \qquad \qquad \qquad 
+                        \beta(x) = \frac{p(x)}{q(x)} = \frac{\pi(x)}{b(x)} 
 \end{align*}
 
 
@@ -762,16 +762,16 @@ Importance Sampling:
 \begin{align*}
     q_{\pi}(s_{t}, a_{t}) - BS & 
             \quad = \quad 
-            \tilde{q}(s_{t}, a_{t}; w_{t}^{'}) 
-            - \tilde{v}(s_{t}; w_{t}) \\[3pt]
+            q_{\pi}(s_{t}, a_{t}; w_{t}^{'}) 
+            - v_{\pi}(s_{t}; w_{t}) \\[3pt]
     = \delta_{t} & 
             \quad = \quad 
-            r_{t+1} + \gamma \tilde{v}(s_{t+1}; w_{t}) 
-            - \tilde{v}(s_{t}; w_{t}) \\[3pt]
+            r_{t+1} + \gamma v(s_{t+1}; w_{t}) 
+            - v(s_{t}; w_{t}) \\[3pt]
     w_{t+1} & 
             \quad = \quad w_{t} + \alpha_{w} 
             \frac{ \pi (a_{t} | s_{t}; \theta_{t}) }{ b (a_{t} | s_{t}) } \delta_{t} 
-            \nabla_{w} \tilde{v}(s_{t}; w_{t}) \\[3pt]
+            \nabla_{w} v(s_{t}; w_{t}) \\[3pt]
     \theta_{t+1} & 
             \quad = \quad \theta_{t} + \alpha_{\theta} \nabla_{\theta} 
             ln \pi (a_{t} | s_{t}; \theta_{t}) 
@@ -779,22 +779,28 @@ Importance Sampling:
 \end{align*}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section*{ch9: Deterministic PG}
+
+
 ~ \\[3pt]
-(4) DPG: 
+(1) DPG: 
 \begin{align*}
-    \mu (s; \theta) &= a \\[3pt]
+    \mu (s; \theta) &= a* \qquad \qquad 
+    \mu (s, a*; \theta) = 1 \\[3pt]
     J(\theta) &= E_{S \sim d_{\mu}} [ v_{\mu}(S) ] 
                = \sum_{S \sim d_{\mu}} d_{\mu}(s) v_{\mu}(s) 
                = d_{\mu}^{T} \cdot v_{\mu} \\[3pt]
     \nabla_{\theta} J(\theta) &= 
             \sum_{S \sim d_{\mu}} d_{\mu}(s) 
             \nabla_{\theta} \mu (s; \theta) 
-            \left( \nabla_{a} q_{\mu}(s, a) \right) |_{a=\mu(s)} 
+            ( \nabla_{a} q_{\mu}(s, a) ) |_{a=\mu(s)} 
             \qquad \qquad \qquad \qquad proof. \\[3pt]
             &= 
             E_{S \sim d_{\mu}} \left[ 
                 \nabla_{\theta} \mu (S; \theta) 
-                \left( \nabla_{a} q_{\mu}(S, a) \right) |_{a=\mu(S)} 
+                ( \nabla_{a} q_{\mu}(S, a) ) |_{a=\mu(S)} 
             \right] \\[3pt]
     \delta_{t} & 
             \quad = \quad 
@@ -804,10 +810,9 @@ Importance Sampling:
             \quad = \quad w_{t} + \alpha_{w} \delta_{t} 
             \nabla_{w} q(s_{t}, a_{t}; w_{t}) \\[3pt]
     \theta_{t+1} & 
-            \quad = \quad \theta_{t} + \alpha_{\theta} \nabla_{\theta} 
-            \mu(s_{t}, \theta_{t}) \left(
-                \nabla_{a}q(s_{t}, a; w_{t+1}) 
-            \right) |_{a=\mu(s_{t})} 
+            \quad = \quad \theta_{t} + \alpha_{\theta} 
+            \nabla_{\theta} \mu(s_{t}; \theta_{t}) 
+            ( \nabla_{a} q(s_{t}, a; w_{t+1}) ) |_{a=\mu(s_{t})} 
 \end{align*}
 
 
